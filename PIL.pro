@@ -148,7 +148,8 @@ HEADERS += src/base/base.h \
     src/network/TCPServerDispatcher.h \
     src/network/MulticastEchoServer.h \
     src/gui/gl/MeshInterleaved.h \
-    src/gui/gl/ply/TinyPly.h
+    src/gui/gl/ply/TinyPly.h \
+    src/cv/VideoReader/VideoReader.h
 
 SOURCES += \
     src/base/Thread/Thread_POSIX.cpp \
@@ -246,4 +247,21 @@ SOURCES += \
     src/network/MulticastEchoServer.cpp \
     apps/Tests/MulticastSocketTest.cpp \
     src/gui/gl/MeshInterleaved.cpp \
-    src/gui/gl/ply/TinyPly.cpp
+    src/gui/gl/ply/TinyPly.cpp \
+    src/cv/VideoReader/VideoReader.cpp \
+    apps/CV_Test/CV_Test.cpp
+
+
+
+################################################################################
+# OpenCV
+################################################################################
+OPENCV_DIR = /opt/opencv-2.4.9
+INCLUDEPATH += $$OPENCV_DIR/include $$OPENCV_DIR/include/opencv
+LIBS        +=  -L$$OPENCV_DIR/lib \
+                -lopencv_calib3d -lopencv_contrib -lopencv_core \
+                -lopencv_features2d -lopencv_flann -lopencv_gpu \
+                -lopencv_highgui -lopencv_imgproc -lopencv_legacy \
+                -lopencv_ml -lopencv_nonfree -lopencv_objdetect \
+                -lopencv_photo -lopencv_stitching -lopencv_ts \
+                -lopencv_video -lopencv_videostab

@@ -1,0 +1,4 @@
+set(CMAKE_BASE_FROM_DIR ${CMAKE_CURRENT_LIST_DIR})
+set(MODULES OPENCV PI_BASE PI_CV)
+
+include(${CMAKE_CURRENT_LIST_DIR}/../../scripts/CMakeListBase.cmake)

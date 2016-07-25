@@ -1,4 +1,4 @@
-set(APPS2BUILD CameraTest ClassLoaderTest GUI_Test Svar_Test Timer_Test Tests VideoCompare Map2DFusion ObstacleAvoidance)
+set(APPS2BUILD CameraTest ClassLoaderTest CV_Test GUI_Test Svar_Test Timer_Test Tests)
 #  SE3_Test
 
 foreach(APPNAME ${APPS2BUILD})

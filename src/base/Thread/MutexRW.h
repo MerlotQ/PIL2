@@ -8,7 +8,7 @@
 #if defined(_WIN32_WCE)
 #include "MutexRW_WINCE.h"
 #else
-#include "MutexRW_WIN32.h"
+#include "MutexRW_Win32.h"
 #endif
 #elif defined(PIL_ANDROID)
 #include "MutexRW_Android.h"

@@ -1,16 +1,19 @@
+
 #include "Path.h"
 #include <algorithm>
 
 
+#define PLATEFORM_INCLUDE_SOURCE
+
 #if defined(PIL_OS_FAMILY_VMS)
 #include "Path_VMS.cpp"
 #elif defined(PIL_OS_FAMILY_UNIX)
-#include "Path_UNIX.h"
+#include "Path_UNIX.cpp"
 #elif defined(PIL_OS_FAMILY_WINDOWS) && defined(PIL_WIN32_UTF8)
 #if defined(_WIN32_WCE)
 #include "Path_WINCE.cpp"
 #else
-#include "Path_WIN32U.cpp"
+#include "Path_WIN32.cpp"
 #endif
 #elif defined(PIL_OS_FAMILY_WINDOWS)
 #include "Path_WIN32.cpp"
@@ -1019,9 +1022,45 @@ std::string Path::transcode(const std::string& path)
 }
 
 
-bool Path::pathExist(const std::string& path)
+int Path::pathExist(const std::string& path)
 {
-    return PathImpl::pathExist(path);
+    return PathImpl::pathExist(path)==true?1:0;
+}
+
+int Path::rm(const std::string& path)
+{
+    return PathImpl::rm(path)==true?0:-1;
+}
+
+int Path::mkdir(const std::string& path)
+{
+    return PathImpl::mkdir(path)==true?0:-1;
+}
+
+int Path::rename(const std::string& pOld, const std::string& pNew)
+{
+    return PathImpl::rename(pOld, pNew)==true?0:-1;
+}
+
+int Path::cmd(const std::string& commands)
+{
+    return PathImpl::cmd(commands);
+}
+
+int Path::lsdir(const std::string& path,std::vector<std::string>& dl)
+{
+    return PathImpl::lsdir(path, dl)==true?0:-1;
+}
+
+
+int Path::is_file(const std::string& path)
+{
+    return PathImpl::is_file(path);
+}
+
+int Path::is_dir(const std::string& path)
+{
+    return PathImpl::is_dir(path);
 }
 
 } // namespace pi

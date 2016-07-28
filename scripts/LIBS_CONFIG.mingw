@@ -1,12 +1,43 @@
 ################################################################################
+#
+#  Pilot Intelligence Library
+#    http://www.pilotintelligence.com/
+#
+#  ----------------------------------------------------------------------------
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+################################################################################
+
+################################################################################
 #Module Config Things
 ################################################################################
 
 ################################################################################
 # Compile setup
 ################################################################################
-SIMP_CFLAGS             = -O3 -pipe -I. -I$(TOPDIR)/src -march=native
-SIMP_CFLAGS            += -DPIL_MINGW -D_WIN32
+
+C_FLAGS                 = -std=c99
+CXX_FLAGS               = -std=c++11
+
+SIMP_CFLAGS             = -O3 -pipe -march=nocona -mtune=core2 \
+                          -fexceptions -mthreads \
+                          -msse4 -msse4.2 \
+                          -I. -I$(TOPDIR)/src 
+SIMP_CFLAGS            += -DPIL_MINGW \
+                          -D_WIN32 -DWIN32 \
+                          -DUNICODE
 #SIMP_CFLAGS            += -g -rdynamic
 SIMP_LDFLAGS            = -Wl,-rpath=.:./libs:../libs:../../libs
 
@@ -14,13 +45,6 @@ SIMP_LDFLAGS            = -Wl,-rpath=.:./libs:../libs:../../libs
 ################################################################################
 ################################################################################
 PTHREAD_LDFLAGS         = -lpthread
-
-
-################################################################################
-# OpenGL settings
-################################################################################
-OPENGL_CFLAGS           = 
-OPENGL_LDFLAGS          = -lGL -lGLU -lglut -lGLEW
 
 
 ################################################################################
@@ -35,41 +59,60 @@ OPENCV_LDFLAGS          = $(shell pkg-config --libs opencv)
 ################################################################################
 # Qt settings
 ################################################################################
-QT_CFLAGS               =   -D_REENTRANT \
+
+QT_CFLAGS               =   -DUNICODE \
+                            -DQT_DLL -DQT_NO_DEBUG \
+                            -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT \
                             -DQT_NO_DEBUG -DQT_DECLARATIVE_LIB -DQT_SVG_LIB -DQT_SQL_LIB -DQT_XML_LIB \
-                            -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_SHARED \
-                            -I/usr/share/qt4/mkspecs/linux-g++ \
-                            -I/usr/include/qt4/QtCore \
-                            -I/usr/include/qt4/QtGui \
-                            -I/usr/include/qt4/QtXml \
-                            -I/usr/include/qt4/QtOpenGL \
-                            -I/usr/include/qt4/QtSql \
-                            -I/usr/include/qt4/QtSvg \
-                            -I/usr/include/qt4/QtDeclarative \
-                            -I/usr/include/qt4 
-QT_LDFLAGS              = -lQtDeclarative -lQtSvg -lQtSql -lQtXml -lQtOpenGL -lQtGui -lQtNetwork -lQtCore 
+                            -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_SHARED \
+                            -I/mingw64/include/qt4/QtCore \
+                            -I/mingw64/include/qt4/QtGui \
+                            -I/mingw64/include/qt4/QtXml \
+                            -I/mingw64/include/qt4/QtOpenGL \
+                            -I/mingw64/include/qt4/QtSql \
+                            -I/mingw64/include/qt4/QtSvg \
+                            -I/mingw64/include/qt4/QtDeclarative \
+                            -I/mingw64/include/qt4/ActiveQt \
+                            -I/mingw64/include/qt4 \
+                            -I/mingw64/share/qt4/mkspecs/linux-g++ 
+
+QT_LDFLAGS              = -lQtDeclarative4 -lQtSvg4 -lQtSql4 -lQtXml4 -lQtOpenGL4 -lQtGui4 -lQtNetwork4 -lQtCore4
 
 
 ################################################################################
 # QGLViewer settings
 ################################################################################
-QGLVIEWER_CFLAGS        =  
-QGLVIEWER_LDFLAGS       = -lQGLViewer #-lqglviewer-qt4
+QGLVIEWER_DIR           = /opt/libQGLViewer
+QGLVIEWER_CFLAGS        = -I$(QGLVIEWER_DIR)/include
+QGLVIEWER_LDFLAGS       = -L$(QGLVIEWER_DIR)/lib -lQGLViewer2
+
+################################################################################
+# OpenGL settings
+################################################################################
+OPENGL_CFLAGS           = 
+OPENGL_LDFLAGS          =  -lopengl32 -lglu32 -lglew32 #-lGL -lGLU -lglut -lGLEW
 
 
 ################################################################################
 # Boost
 ################################################################################
 BOOST_CFLAGS            = 
-BOOST_LDFLAGS           = -lboost_serialization -lboost_system -lboost_thread -lboost_program_options \
-                          -lboost_log -lboost_log_setup
+BOOST_LDFLAGS           = -lboost_serialization-mt -lboost_system-mt -lboost_thread-mt \
+                          -lboost_program_options-mt -lboost_log-mt -lboost_log_setup-mt
 
+
+################################################################################
+# Poco
+################################################################################
+POCO_DIR                =
+POCO_CFLAGS             = -DPOCO_WIN32_UTF8
+POCO_LDFLAGS            = -lPocoFoundation -lPocoNet
 
 ################################################################################
 # CVD
 ################################################################################
-CVD_CFLAGS              =  -DHAS_CVD
-CVD_LDFLAGS             =  -lcvd
+CVD_CFLAGS              =
+CVD_LDFLAGS             =
 
 
 ################################################################################
@@ -85,12 +128,12 @@ EIGEN3_CFLAGS           = -I$(TOPDIR)/Thirdparty/eigen3
 EIGEN3_LDFLAGS          = 
 
 ###############################################################################
-# suitesparse settings
+# suitesparse settings (-lcsparse)
 ################################################################################
 SUITESPARSE_TOP         = /usr
 SUITESPARSE_CFLAGS      = -I$(SUITESPARSE_TOP)/include/suitesparse
 SUITESPARSE_LDFLAGS     = -L/usr/lib/x86_64-linux-gnu \
-                          -lcxsparse -lcsparse \
+                          -lcxsparse \
                           -lcholmod -lamd -lcolamd -lcamd -lccolamd 
 
 ################################################################################
@@ -117,7 +160,7 @@ SOPHUS_CFLAGS           = -I$(SOPHUS_TOP)
 SOPHUS_LDFLAGS          = -Wl,-rpath=. -L$(LIBS_PATH) -lsophus
 
 ################################################################################
-# fast settings
+# Fast settings
 ################################################################################
 FAST_TOP                = $(TOPDIR)/Thirdparty/fast
 FAST_CFLAGS             = -I$(FAST_TOP)/include
@@ -143,7 +186,7 @@ SVO_LDFLAGS             = -L$(LIBS_PATH) -Wl,-rpath=. -lsvo
 ################################################################################
 LUA_TOP                 = $(TOPDIR)/Thirdparty/lua-5.1.5
 LUA_CFLAGS              = -I$(LUA_TOP)/src
-LUA_LDFLAGS             = -L$(LIBS_PATH) -Wl,-rpath=. -llua -ldl
+LUA_LDFLAGS             = -L$(LIBS_PATH) -Wl,-rpath=. -llua 
 
 ################################################################################
 # alglib
@@ -193,6 +236,14 @@ LEVMAR_CFLAGS           = -I$(LEVMAR_TOP)/src -DLM_DBL_PREC
 LEVMAR_LDFLAGS          = -rdynamic -llevmar -llapack -lblas -lf2c
 
 
+################################################################################
+# ffmpeg settings
+################################################################################
+FFMPEG_TOP              =
+FFMPEG_CFLAGS           =
+FFMPEG_LDFLAGS          = -lavcodec -lavfilter -lavformat -lavresample -lavutil \
+                          -lpostproc -lswresample -lswscale
+
 
 ################################################################################
 # LIB_PI settings
@@ -202,17 +253,17 @@ LIB_PI_INCP             = $(LIB_PI_TOP)/src
 LIB_PI_LIBP             = $(LIB_PI_TOP)/libs
 
 
-LIB_PI_CFLAGS           = -I$(LIB_PI_INCP) $(TooN_CFLAGS)
+LIB_PI_CFLAGS           = -I$(LIB_PI_INCP) $(TooN_CFLAGS) $(POCO_CFLAGS)
 LIB_PI_LDFLAGS          = -Wl,-rpath=. -L$(LIB_PI_LIBP) \
                           -lpi_lua -lpi_gui -lpi_network -lpi_slam -lpi_cv -lpi_hardware \
-                          -lpi_uav -lpi_base
+                          -lpi_uav -lpi_base $(POCO_LDFLAGS)
 
 PIL_CFLAGS              = $(LIB_PI_CFLAGS)
 PIL_LDFLAGS             = $(LIB_PI_LDFLAGS)
 
 
-PI_BASE_CFLAGS          = $(LIB_PI_CFLAGS)
-PI_BASE_LDFLAGS         = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_base
+PI_BASE_CFLAGS          = $(LIB_PI_CFLAGS) $(POCO_CFLAGS)
+PI_BASE_LDFLAGS         = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_base $(POCO_LDFLAGS)
 
 PI_GUI_CFLAGS           = $(LIB_PI_CFLAGS)
 PI_GUI_LDFLAGS          = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_gui

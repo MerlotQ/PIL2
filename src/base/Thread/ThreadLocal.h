@@ -40,7 +40,36 @@ public:
     }
 };
 
-#else
+#elif defined(PIL_OS_FAMILY_WINDOWS)
+
+template<class C> class ThreadLocal
+{
+private:
+    DWORD key;
+
+    static void deleter(void* v)
+    {
+        delete static_cast<C*>(v);
+    }
+
+public:
+    ThreadLocal()
+    {
+        key = TlsAlloc();
+        TlsSetValue(key, (LPVOID) new C);
+    }
+
+    ~ThreadLocal()
+    {
+        TlsFree(key);
+    }
+
+    C& operator()()
+    {
+        return *static_cast<C*>(TlsGetValue(key));
+    }
+};
+
 #endif
 
 } // namespace pi

@@ -31,7 +31,7 @@
 #include <sys/times.h>
 #endif
 #elif defined(PIL_OS_FAMILY_WINDOWS)
-#include "PIL/UnWindows.h"
+#include "../Platform/UnWindows.h"
 #if defined(_WIN32_WCE)
 #include <cmath>
 #endif

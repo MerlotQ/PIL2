@@ -1,3 +1,6 @@
+
+#ifdef PLATEFORM_INCLUDE_SOURCE
+
 #include "Mutex_POSIX.h"
 #include "../Time/Timestamp.h"
 #if !defined(PIL_NO_SYS_SELECT_H)
@@ -139,3 +142,5 @@ FastMutexImpl::~FastMutexImpl()
 
 
 } // namespace PIL
+
+#endif

@@ -1,24 +1,22 @@
-//
-// Thread.cpp
-//
-// $Id: //PIL/1.4/PIL/src/Thread.cpp#2 $
-//
-// Library: PIL
-// Package: Threading
-// Module:  Thread
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
 
+
+#include <sstream>
+
+#include "../Debug/Exception.h"
 
 #include "Thread.h"
 #include "Mutex.h"
-#include "../Debug/Exception.h"
 #include "AtomicCounter.h"
-#include <sstream>
+
+#define PLATEFORM_INCLUDE_SOURCE
+
+#if defined(PI_OS_FAMILY_WINDOWS)
+#include "Thread_Win32.cpp"
+#elif defined(PI_VXWORKS)
+#include "Thread_VX.cpp"
+#else
+#include "Thread_POSIX.cpp"
+#endif
 
 namespace pi {
 

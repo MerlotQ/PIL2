@@ -29,7 +29,8 @@ typedef std::vector<std::string> StringArray;
 /// \param delims - delims
 /// \return string array
 ///
-StringArray split_text(const std::string &intext, const std::string &delims);
+StringArray split_text(const std::string& intext, const std::string &delims);
+std::string join_text(const StringArray& sa, const std::string& delims);
 
 ///
 /// \brief split_line

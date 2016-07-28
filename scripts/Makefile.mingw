@@ -1,4 +1,26 @@
 ################################################################################
+#
+#  Pilot Intelligence Library
+#    http://www.pilotintelligence.com/
+#
+#  ----------------------------------------------------------------------------
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+################################################################################
+
+################################################################################
 # Platform Settings
 ################################################################################
 MAKE_OS     = mingw
@@ -8,11 +30,11 @@ CXX         = g++
 NVCC        = nvcc
 AR          = ar
 
-MOC         = moc-qt4
+MOC         = moc
 RCC         = rcc
 
 OBJEXT      = .o
-EXEEXT     ?= 
+EXEEXT      = .exe
 ALIBEXT     = .a
 DLLEXT      = .dll
 
@@ -43,7 +65,7 @@ sinclude ./config.mk
 
 TOPDIR		?= .
 SRC_PATH    ?= .
-BUILD_PATH	?= $(TOPDIR)/build
+BUILD_PATH	?= $(TOPDIR)/build/mingw
 LIBS_PATH	?= $(TOPDIR)/libs
 BIN_PATH    ?= $(TOPDIR)/bin
 OUTPUT      ?= $(HereFolderName)
@@ -54,12 +76,14 @@ MAKE_TYPE   ?= bin #shared static
 LIB_PREFIX  ?= lib
 
 ifeq "$(MAKE_TYPE)" "bin"
-OUTPUT_NAME ?= $(BIN_PATH)/$(LIB_PREFIX)$(OUTPUT)$(EXEEXT)
+OUTPUT_NAME ?= $(BIN_PATH)/$(OUTPUT)$(EXEEXT)
 endif
 
 ifeq "$(MAKE_TYPE)" "shared"
-COMPILEFLAGS+= -shared
+COMPILEFLAGS+= 
 OUTPUT_NAME ?= $(LIBS_PATH)/$(LIB_PREFIX)$(OUTPUT)$(DLLEXT)
+OUTPUT_EX   ?= $(LIBS_PATH)/$(LIB_PREFIX)$(OUTPUT)$(ALIBEXT)
+LINKFLAGS   += -shared -Wl,--out-implib,$(OUTPUT_EX)
 endif
 
 ifeq "$(MAKE_TYPE)" "static"
@@ -138,21 +162,21 @@ endif
 $(BUILD_PATH)/%.d: %.c
 	@mkdir -p $$(dirname $@)   
 	@set -e; rm -f $@; \
-	$(CC) -MM  $< $(COMPILEFLAGS) > $@.$$$$; \
+	$(CC) -MM  $< $(COMPILEFLAGS) $(C_FLAGS) > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,$(BUILD_PATH)/\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
 $(BUILD_PATH)/%.d: %.cc
 	@mkdir -p $$(dirname $@)  
 	@set -e; rm -f $@; \
-	$(CXX) -MM  $< $(COMPILEFLAGS) > $@.$$$$; \
+	$(CXX) -MM  $< $(COMPILEFLAGS) $(CXX_FLAGS) > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,$(BUILD_PATH)/\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
 $(BUILD_PATH)/%.d: %.cpp
 	@mkdir -p $$(dirname $@)  
 	@set -e; rm -f $@; \
-	$(CXX) -MM  $< $(COMPILEFLAGS) > $@.$$$$; \
+	$(CXX) -MM  $< $(COMPILEFLAGS) $(CXX_FLAGS) > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,$(BUILD_PATH)/\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
@@ -160,29 +184,29 @@ sinclude $(OBJ_FILES_BUILD:.o=.d)
 
 # Default rules
 $(BUILD_PATH)/%.o: %.cc %.h $(BUILD_PATH)/%.d
-	$(CXX) -o $@  -c $< $(COMPILEFLAGS)
+	$(CXX) -o $@  -c $< $(COMPILEFLAGS) $(CXX_FLAGS)
 
 $(BUILD_PATH)/%.o: %.cpp %.h $(BUILD_PATH)/%.d
-	$(CXX) -o $@  -c $< $(COMPILEFLAGS)
+	$(CXX) -o $@  -c $< $(COMPILEFLAGS) $(CXX_FLAGS)
 
 $(BUILD_PATH)/%.o: %.c %.h $(BUILD_PATH)/%.d
-	$(CC) -o $@  -c $< $(COMPILEFLAGS)
+	$(CC) -o $@  -c $< $(COMPILEFLAGS) $(C_FLAGS)
 
 $(BUILD_PATH)/%.o: %.cpp $(BUILD_PATH)/%.d
-	$(CXX) -o $@  -c $< $(COMPILEFLAGS)
+	$(CXX) -o $@  -c $< $(COMPILEFLAGS) $(CXX_FLAGS)
 
 $(BUILD_PATH)/%.o: %.cc $(BUILD_PATH)/%.d
-	$(CXX) -o $@  -c $< $(COMPILEFLAGS)
+	$(CXX) -o $@  -c $< $(COMPILEFLAGS) $(CXX_FLAGS)
 
 $(BUILD_PATH)/%.o: %.c $(BUILD_PATH)/%.d
-	$(CC) -o $@  -c $< $(COMPILEFLAGS)
+	$(CC) -o $@  -c $< $(COMPILEFLAGS) $(C_FLAGS)
 
 # MOC rules
 $(BUILD_PATH)/%.moc.cpp : %.h
 	$(MOC) $< -o $@  $(MOCFLAGS) 
 	
 $(BUILD_PATH)/%.moc.o: $(BUILD_PATH)/%.moc.cpp
-	$(CXX) -c $^ -o $@  $(COMPILEFLAGS)
+	$(CXX) -c $^ -o $@  $(COMPILEFLAGS) $(CXX_FLAGS)
 
 # Resource rules
 # FIXME: check do not use -name is or not effect qrc 
@@ -191,7 +215,7 @@ $(BUILD_PATH)/%.qrc.cpp : %.qrc
 	$(RCC) $< -o $@ 
 	
 $(BUILD_PATH)/%.qrc.o: $(BUILD_PATH)/%.qrc.cpp
-	$(CXX) -c $^ -o $@  $(COMPILEFLAGS)
+	$(CXX) -c $^ -o $@  $(COMPILEFLAGS) $(CXX_FLAGS)
 
 # CUDA rules
 $(BUILD_PATH)/%.cuda.o : %.cu

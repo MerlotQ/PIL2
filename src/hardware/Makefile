@@ -1,0 +1,49 @@
+################################################################################
+#
+#  Pilot Intelligence Library
+#    http://www.pilotintelligence.com/
+#
+#  ----------------------------------------------------------------------------
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+################################################################################
+
+
+TOPDIR          ?= ../..
+LIB_MAKE_TYPE   = shared
+#LIB_MAKE_TYPE   ?=static
+MAKE_TYPE       = $(LIB_MAKE_TYPE)
+LIB_PREFIX      = libpi_
+BUILD_PATH      = $(TOPDIR)/build/src/$(HereFolderName)
+
+include $(TOPDIR)/scripts/make.conf
+
+
+# FIXME: remove -DUNICODE
+ifeq "$(MAKE_OS)" "mingw"
+SIMP_CFLAGS             = -O3 -pipe -march=nocona -mtune=core2 \
+                          -fexceptions -mthreads \
+                          -msse4 -msse4.2 \
+                           -std=c++11 \
+                          -I. -I$(TOPDIR)/src 
+SIMP_CFLAGS            += -DPIL_MINGW \
+                          -D_WIN32 -DWIN32 
+                          
+#POCO_CFLAGS             =
+endif
+
+
+clean_tmp:
+	@rm $(BUILD_PATH) -r

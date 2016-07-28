@@ -1,18 +1,40 @@
+/*******************************************************************************
+
+  Pilot Intelligence Library
+    http://www.pilotintelligence.com/
+
+  ----------------------------------------------------------------------------
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+*******************************************************************************/
+
 #ifndef __COLOR_TABLE_H__
 #define __COLOR_TABLE_H__
 
 
 /**
- *  カラー定義
- *      0. グレースケール
- *      1. 赤→薄緑→青
- *      2. 赤→緑→青
- *      3. Fire1(黒→赤→橙→黄→白)
- *      4. Fire2(黒→濃紫→橙→黄→白)
- *      5. Fresh(青→水色→薄黄緑→黄→赤)
- *      6. Hitachi(青→水色→黄緑→黄→赤)
- *      7. Doppler(青→黒→赤)
- *      8. Jet(Blue -> Red)
+ *  Color Table
+ *      0. gray-scale
+ *      1. red -> light green -> blue
+ *      2. red -> green -> blue
+ *      3. Fire1 (black -> red -> orange -> yellow -> white)
+ *      4. Fire2 (black -> purle -> orange -> yellow -> white)
+ *      5. Fresh (blue -> water color -> yellow green -> red)
+ *      6. Hitachi (blue -> water color -> yellow green -> yellow -> red)
+ *      7. Doppler (blue -> black -> red)
+ *      8. Jet (Blue -> Red)
  */
 
 unsigned char Cr[]={

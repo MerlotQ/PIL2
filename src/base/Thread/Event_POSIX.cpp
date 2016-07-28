@@ -1,18 +1,5 @@
-//
-// Event_POSIX.cpp
-//
-// $Id: //PIL/1.4/Foundation/src/Event_POSIX.cpp#3 $
-//
-// Library: Foundation
-// Package: Threading
-// Module:  Event
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
 
+#ifdef PLATEFORM_INCLUDE_SOURCE
 
 #include "Event_POSIX.h"
 #if defined(PIL_VXWORKS)
@@ -116,3 +103,6 @@ bool EventImpl::waitImpl(long milliseconds)
 
 
 } // namespace PIL
+
+
+#endif

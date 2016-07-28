@@ -18,6 +18,7 @@
 #define PIL_OS_QNX           0x000b
 #define PIL_OS_VXWORKS       0x000c
 #define PIL_OS_CYGWIN        0x000d
+#define PIL_OS_MINGW         0x000e
 #define PIL_OS_UNKNOWN_UNIX  0x00ff
 #define PIL_OS_WINDOWS_NT    0x1001
 #define PIL_OS_WINDOWS_CE    0x1011

@@ -1,16 +1,21 @@
-#include "../Environment.h"
-#ifdef PIL_OS_FAMILY_UNIX
 
-#include "Thread_POSIX.h"
-#include "Thread.h"
+
+#ifdef PLATEFORM_INCLUDE_SOURCE
+
+#include <signal.h>
+
+#include "../Environment.h"
 #include "../Debug/Exception.h"
 #include "../Time/Timestamp.h"
-#include <signal.h>
+#include "Thread_POSIX.h"
+#include "Thread.h"
+
 #if defined(__sun) && defined(__SVR4)
 #	if !defined(__EXTENSIONS__)
 #		define __EXTENSIONS__
 #	endif
 #endif
+
 #if PIL_OS == PIL_OS_LINUX || PIL_OS == PIL_OS_MAC_OS_X || PIL_OS == PIL_OS_QNX
 #	include <time.h>
 #endif
@@ -344,4 +349,6 @@ int ThreadImpl::reverseMapPrio(int prio, int policy)
 
 
 } // namespace PIL
-#endif
+
+#endif // end of PLATEFORM_INCLUDE_SOURCE
+

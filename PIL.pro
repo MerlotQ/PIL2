@@ -8,6 +8,10 @@ DEPENDPATH += . src/base src/base/Platform src/base/Thread src/base/Types
 INCLUDEPATH += . src
 QMAKE_CXXFLAGS += -std=c++11
 
+
+DEFINES += PLATEFORM_INCLUDE_SOURCE
+
+
 # Input
 HEADERS += src/base/base.h \
            src/base/Environment.h \
@@ -149,7 +153,17 @@ HEADERS += src/base/base.h \
     src/network/MulticastEchoServer.h \
     src/gui/gl/MeshInterleaved.h \
     src/gui/gl/ply/TinyPly.h \
-    src/cv/VideoReader/VideoReader.h
+    src/cv/VideoReader/VideoReader.h \
+    src/base/Thread/Event_Win32.h \
+    src/base/Thread/Mutex_Win32.h \
+    src/base/Thread/MutexRW_Win32.h \
+    src/base/Path/Path_WIN32.h \
+    src/base/Utils/Environment.h \
+    src/base/Utils/Environment_UNIX.h \
+    src/base/Utils/Environment_WIN32.h \
+    src/base/Utils/Environment_WIN32U.h \
+    src/base/ClassLoader/SharedLibrary_WIN32.h \
+    src/base/Path/Path_Utils.h
 
 SOURCES += \
     src/base/Thread/Thread_POSIX.cpp \
@@ -249,7 +263,17 @@ SOURCES += \
     src/gui/gl/MeshInterleaved.cpp \
     src/gui/gl/ply/TinyPly.cpp \
     src/cv/VideoReader/VideoReader.cpp \
-    apps/CV_Test/CV_Test.cpp
+    apps/CV_Test/CV_Test.cpp \
+    src/base/Thread/Event_Win32.cpp \
+    src/base/Thread/Mutex_Win32.cpp \
+    src/base/Thread/MutexRW_Win32.cpp \
+    src/base/Path/Path_WIN32.cpp \
+    src/base/Utils/Environment.cpp \
+    src/base/Utils/Environment_UNIX.cpp \
+    src/base/Utils/Environment_WIN32.cpp \
+    src/base/ClassLoader/SharedLibrary_WIN32.cpp \
+    src/base/Path/Path_UNIX.cpp \
+    src/base/Path/Path_Utils.cpp
 
 
 

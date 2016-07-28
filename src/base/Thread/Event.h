@@ -7,7 +7,7 @@
 
 
 #if defined(PIL_OS_FAMILY_WINDOWS)
-#include "Event_WIN32.h"
+#include "Event_Win32.h"
 #else
 #include "Event_POSIX.h"
 #endif

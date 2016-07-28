@@ -314,7 +314,17 @@ public:
         /// On all other platforms, or if PIL has not been compiled with Windows UTF-8
         /// support, this function returns the string unchanged.
 
-    static bool pathExist(const std::string& path);
+
+    static int pathExist(const std::string& path);
+    static int rm(const std::string& path);
+    static int mkdir(const std::string& path);
+    static int cmd(const std::string& commands);
+    static int rename(const std::string& pOld, const std::string& pNew);
+    static int lsdir(const std::string& path,std::vector<std::string>& dl);
+
+    static int is_file(const std::string& path);
+    static int is_dir(const std::string& path);
+
 
 protected:
     void parseUnix(const std::string& path);

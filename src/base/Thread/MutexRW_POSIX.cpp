@@ -1,3 +1,6 @@
+
+#ifdef PLATEFORM_INCLUDE_SOURCE
+
 #include "MutexRW_POSIX.h"
 
 namespace pi {
@@ -16,3 +19,6 @@ MutexRWImpl::~MutexRWImpl()
 
 
 } // namespace pi
+
+#endif // end of PLATEFORM_INCLUDE_SOURCE
+

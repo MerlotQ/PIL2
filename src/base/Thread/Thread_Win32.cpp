@@ -1,109 +1,218 @@
-#include <base/Environment.h>
 
-#ifdef PIL_OS_FAMILY_WINDOWS
-#include <time.h>
-#include "Thread_POSIX.h"
+#ifdef PLATEFORM_INCLUDE_SOURCE
+
+
+#include "../Debug/Exception.h"
+
+#include "Thread_Win32.h"
+
+#include <process.h>
+
+
+#if defined(PI_WIN32_DEBUGGER_THREAD_NAMES)
+
+
+namespace
+{
+    /// See <http://msdn.microsoft.com/en-us/library/xcb2z8hs.aspx>
+    /// and <http://blogs.msdn.com/b/stevejs/archive/2005/12/19/505815.aspx> for
+    /// more information on the code below.
+
+    const DWORD MS_VC_EXCEPTION = 0x406D1388;
+
+    #pragma pack(push,8)
+    typedef struct tagTHREADNAME_INFO
+    {
+        DWORD dwType;     // Must be 0x1000.
+        LPCSTR szName;    // Pointer to name (in user addr space).
+        DWORD dwThreadID; // Thread ID (-1=caller thread).
+        DWORD dwFlags;    // Reserved for future use, must be zero.
+    } THREADNAME_INFO;
+    #pragma pack(pop)
+
+    void setThreadName(DWORD dwThreadID, const char* threadName)
+    {
+        THREADNAME_INFO info;
+        info.dwType     = 0x1000;
+        info.szName     = threadName;
+        info.dwThreadID = dwThreadID;
+        info.dwFlags    = 0;
+
+        __try
+        {
+            RaiseException(MS_VC_EXCEPTION, 0, sizeof(info)/sizeof(ULONG_PTR), (ULONG_PTR*)&info);
+        }
+        __except (EXCEPTION_CONTINUE_EXECUTION)
+        {
+        }
+    }
+}
+
+
+#endif
+
 
 namespace pi {
-//Static variables
-bool Thread::ourInitializedFlag = false;
-pthread_key_t Thread::ourKey;
-unsigned int Thread::ourCount;
 
-/** The constructor performs global initialization of the Thread class if necessary. */
-Thread::Thread() : myRunningFlag(false), myStopFlag(false)
+
+ThreadImpl::CurrentThreadHolder ThreadImpl::_currentThreadHolder;
+
+
+ThreadImpl::ThreadImpl():
+    _thread(0),
+    _threadId(0),
+    _prio(PRIO_NORMAL_IMPL),
+    _stackSize(POCO_THREAD_STACK_SIZE)
 {
-   if (!ourInitializedFlag)
-     {
-    init();
-    ourInitializedFlag = true;
-     }
 }
 
-/** Calls stop() and join() if the thread is alive. */
-Thread::~Thread()
+
+ThreadImpl::~ThreadImpl()
 {
-   if (isRunning())
-     {
-    stop();
-    join();
-     }
+    if (_thread) CloseHandle(_thread);
 }
 
-/** Use PThreads to create a new thread. */
-void Thread::start(Runnable* runnable)
+
+void ThreadImpl::setPriorityImpl(int prio)
 {
-    myRunnable = runnable ? runnable : this;
-    myStopFlag = false;
-    pthread_attr_t attr;
-    pthread_attr_init(&attr);
-    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-    ourCount++;
-    pthread_create(&myID, &attr, threadproc, this);
+    if (prio != _prio)
+    {
+        _prio = prio;
+        if (_thread)
+        {
+            if (SetThreadPriority(_thread, _prio) == 0)
+                throw SystemException("cannot set thread priority");
+        }
+    }
 }
 
-void Thread::stop()
+
+void ThreadImpl::setOSPriorityImpl(int prio, int /* policy */)
 {
-   myStopFlag = true;
+    setPriorityImpl(prio);
 }
 
-bool Thread::shouldStop() const
+
+void ThreadImpl::startImpl(SharedPtr<Runnable> pTarget)
 {
-   return myStopFlag;
+    if (isRunningImpl())
+        throw SystemException("thread already running");
+
+    _pRunnableTarget = pTarget;
+    createImpl(runnableEntry, this);
 }
 
-bool Thread::isRunning() const
+
+void ThreadImpl::createImpl(Entry ent, void* pData)
 {
-   return myRunningFlag;
-}
-
-void Thread::join()
-{
-   pthread_join(myID,0);
-}
-
-pthread_t Thread::getID()
-{
-   return myID;
-}
-
-unsigned int Thread::count()
-{
-   return ourCount;
-}
-
-Thread* Thread::getCurrent()
-{
-   return (Thread*)pthread_getspecific(ourKey);
-}
-
-/** Uses nanosleep. */
-void Thread::sleep(unsigned int milli)
-{
-   struct timespec ts = { milli/1000, (milli%1000)*1000000 };
-   nanosleep(&ts, 0);
-}
-
-bool Thread::init()
-{
-   ourCount = 0;
-   pthread_key_create(&ourKey,0);
-   return true;
-}
-
-void* Thread::threadproc(void* param)
-{
-   Thread* thread = (Thread*)param;
-   pthread_setspecific(ourKey, thread);
-   thread->myRunningFlag = true;
-   if (thread->myRunnable)
-     thread->myRunnable->run();
-   else
-     thread->run();
-   thread->myRunningFlag = false;
-   ourCount--;
-   return 0;
-}
-
-}
+#if defined(_DLL)
+    _thread = CreateThread(NULL, _stackSize, ent, pData, 0, &_threadId);
+#else
+    unsigned threadId;
+    _thread = (HANDLE) _beginthreadex(NULL, _stackSize, ent, this, 0, &threadId);
+    _threadId = static_cast<DWORD>(threadId);
 #endif
+    if (!_thread)
+        throw SystemException("cannot create thread");
+    if (_prio != PRIO_NORMAL_IMPL && !SetThreadPriority(_thread, _prio))
+        throw SystemException("cannot set thread priority");
+}
+
+
+void ThreadImpl::joinImpl()
+{
+    if (!_thread) return;
+
+    switch (WaitForSingleObject(_thread, INFINITE))
+    {
+    case WAIT_OBJECT_0:
+        threadCleanup();
+        return;
+    default:
+        throw SystemException("cannot join thread");
+    }
+}
+
+
+bool ThreadImpl::joinImpl(long milliseconds)
+{
+    if (!_thread) return true;
+
+    switch (WaitForSingleObject(_thread, milliseconds + 1))
+    {
+    case WAIT_TIMEOUT:
+        return false;
+    case WAIT_OBJECT_0:
+        threadCleanup();
+        return true;
+    default:
+        throw SystemException("cannot join thread");
+    }
+}
+
+
+bool ThreadImpl::isRunningImpl() const
+{
+    if (_thread)
+    {
+        DWORD ec = 0;
+        return GetExitCodeThread(_thread, &ec) && ec == STILL_ACTIVE;
+    }
+    return false;
+}
+
+
+void ThreadImpl::threadCleanup()
+{
+    if (!_thread) return;
+    if (CloseHandle(_thread)) _thread = 0;
+}
+
+
+ThreadImpl* ThreadImpl::currentImpl()
+{
+    return _currentThreadHolder.get();
+}
+
+
+ThreadImpl::TIDImpl ThreadImpl::currentTidImpl()
+{
+    return GetCurrentThreadId();
+}
+
+
+#if defined(_DLL)
+DWORD WINAPI ThreadImpl::runnableEntry(LPVOID pThread)
+#else
+unsigned __stdcall ThreadImpl::runnableEntry(void* pThread)
+#endif
+{
+    _currentThreadHolder.set(reinterpret_cast<ThreadImpl*>(pThread));
+#if defined(POCO_WIN32_DEBUGGER_THREAD_NAMES)
+    setThreadName(-1, reinterpret_cast<Thread*>(pThread)->getName().c_str());
+#endif
+    try
+    {
+        reinterpret_cast<ThreadImpl*>(pThread)->_pRunnableTarget->run();
+    }
+    catch (Exception& exc)
+    {
+        //ErrorHandler::handle(exc);
+    }
+    catch (std::exception& exc)
+    {
+        //ErrorHandler::handle(exc);
+    }
+    catch (...)
+    {
+        //ErrorHandler::handle();
+    }
+
+    return 0;
+}
+
+
+} // namespace pi
+
+
+#endif // end of PLATEFORM_INCLUDE_SOURCE

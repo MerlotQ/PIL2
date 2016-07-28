@@ -7,6 +7,7 @@
 #include "../Debug/Assert.h"
 #include <sstream>
 #include <ctime>
+
 #if defined(_WIN32_WCE) && _WIN32_WCE < 0x800
 #include "wce_time.h"
 #endif

@@ -10,7 +10,7 @@
 #if defined(_WIN32_WCE)
 #include "Mutex_WINCE.h"
 #else
-#include "Mutex_WIN32.h"
+#include "Mutex_Win32.h"
 #endif
 #elif defined(PIL_VXWORKS)
 #include "Mutex_VX.h"

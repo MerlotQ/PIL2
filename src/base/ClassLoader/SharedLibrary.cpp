@@ -1,6 +1,23 @@
 #include "SharedLibrary.h"
 #include "../Debug/Exception.h"
 
+
+#define PLATEFORM_INCLUDE_SOURCE
+
+#if defined(hpux) || defined(_hpux)
+#include "SharedLibrary_HPUX.cpp"
+#elif defined(PIL_VXWORKS)
+#include "SharedLibrary_VX.cpp"
+#elif defined(PIL_OS_FAMILY_UNIX)
+#include "SharedLibrary_UNIX.cpp"
+#elif defined(PIL_OS_FAMILY_WINDOWS) && defined(PIL_WIN32_UTF8)
+#include "SharedLibrary_WIN32.cpp"
+#elif defined(PIL_OS_FAMILY_WINDOWS)
+#include "SharedLibrary_WIN32.cpp"
+#elif defined(PIL_OS_FAMILY_VMS)
+#include "SharedLibrary_VMS.cpp"
+#endif
+
 namespace pi {
 
 SharedLibrary::SharedLibrary()

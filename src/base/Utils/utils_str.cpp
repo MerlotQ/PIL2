@@ -115,6 +115,19 @@ StringArray split_text(const string &intext, const string &delims)
     return r;
 }
 
+std::string join_text(const StringArray& sa, const std::string& delims)
+{
+    std::string s;
+
+    for(int i=0; i<sa.size(); i++) {
+        if( i == 0 ) s = sa[i];
+        else         s = s + delims + sa[i];
+    }
+
+    return s;
+}
+
+
 ///
 /// \brief split_line
 /// \param intext - input string

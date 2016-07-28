@@ -1,6 +1,9 @@
+
+
+#ifdef PLATEFORM_INCLUDE_SOURCE
+
 #include "SharedLibrary_UNIX.h"
 
-#if PIL_OS_FAMILY_UNIX
 #include "../Debug/Exception.h"
 #include <dlfcn.h>
 
@@ -117,4 +120,5 @@ std::string SharedLibraryImpl::suffixImpl()
 
 
 } // namespace pi
-#endif //PIL_OS_FAMILY_UNIX
+
+#endif // end of PLATEFORM_INCLUDE_SOURCE

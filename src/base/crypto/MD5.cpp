@@ -1,9 +1,30 @@
+/*******************************************************************************
+
+  Pilot Intelligence Library
+    http://www.pilotintelligence.com/
+
+  ----------------------------------------------------------------------------
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+*******************************************************************************/
+
+
 /*
  * md5.h and md5.c are based off of md5hl.c, md5c.c, and md5.h from libmd, which in turn is
  * based off the FreeBSD libmd library.  Their respective copyright notices follow:
- */
-
-/*
+ *
  * This code implements the MD5 message-digest algorithm.
  * The algorithm is due to Ron Rivest.  This code was
  * written by Colin Plumb in 1993, no copyright is claimed.
@@ -13,26 +34,37 @@
  * This code has been tested against that, and is equivalent,
  * except that you don't need to include two pages of legalese
  * with every copy.
+ *
  */
 
-#include <sys/types.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "md5.h"
-#ifdef WITH_DMALLOC
-#  include <dmalloc.h>
-#endif
+#include "MD5.h"
+
+namespace pi {
+namespace crypto {
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+#define MD5_HASHBYTES 16
+
+typedef struct MD5Context {
+    uint32_t buf[4];
+        uint32_t bits[2];
+        unsigned char in[64];
+} MD5_CTX;
+
 
 static void MD5Init(MD5_CTX *context);
 static void MD5Update(MD5_CTX *context, unsigned char const *buf, unsigned len);
 static void MD5Final(unsigned char digest[MD5_HASHBYTES], MD5_CTX *context);
 static void MD5Transform(uint32_t buf[4], uint32_t const in[16]);
 static char* MD5End(MD5_CTX *, char *);
+
 
 
 #if __BYTE_ORDER == 1234
@@ -56,40 +88,8 @@ void byteReverse(unsigned char *buf, unsigned longs)
 #endif /* ! __BYTE_ORDER == 1234 */
 
 
-
-
-char* md5_file (const char *filename, char *buf)
-{
-    unsigned char buffer[BUFSIZ];
-    MD5_CTX ctx;
-    int f,i,j;
-
-    MD5Init(&ctx);
-    f = open(filename, O_RDONLY);
-    if (f < 0) return 0;
-    while ((i = read(f,buffer,sizeof buffer)) > 0) {
-                MD5Update(&ctx,buffer,i);
-    }
-    j = errno;
-    close(f);
-    errno = j;
-    if (i < 0) return 0;
-    return MD5End(&ctx, buf);
-}
-
-char* md5_data (const unsigned char *data, unsigned int len, char *buf)
-{
-    MD5_CTX ctx;
-
-    MD5Init(&ctx);
-    MD5Update(&ctx,data,len);
-    return MD5End(&ctx, buf);
-}
-
-
-/* Non-Interface Methods */
-
-/* from md5hl.c */
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 char *
 MD5End(MD5_CTX *ctx, char *buf)
@@ -211,11 +211,8 @@ void MD5Final(unsigned char digest[16], MD5_CTX *ctx)
     byteReverse(ctx->in, 14);
 
     /* Append length in bits and transform */
-    uint32_t *pTem = (uint32_t*) ctx->in;
-    pTem[14] = ctx->bits[0];
-    pTem[15] = ctx->bits[1];
-    //((uint32_t *) ctx->in)[14] = ctx->bits[0];
-    //((uint32_t *) ctx->in)[15] = ctx->bits[1];
+    ((uint32_t *) ctx->in)[14] = ctx->bits[0];
+    ((uint32_t *) ctx->in)[15] = ctx->bits[1];
 
     MD5Transform(ctx->buf, (uint32_t *) ctx->in);
     byteReverse((unsigned char *) ctx->buf, 4);
@@ -322,3 +319,82 @@ void MD5Transform(uint32_t buf[4], uint32_t const in[16])
     buf[2] += c;
     buf[3] += d;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+int md5_file(const std::string& fname, std::vector<uint8_t>& md5_hex)
+{
+    MD5_CTX ctx;
+
+    unsigned char buffer[BUFSIZ];
+    int l = 0;
+
+    MD5Init(&ctx);
+
+    // read & process data
+    FILE *fp = fopen(fname.c_str(), "rb");
+    if( fp == NULL ) return -1;
+
+    while( 1 ) {
+        l = fread(buffer, 1, BUFSIZ, fp);
+        if( l <= 0 ) break;
+
+        MD5Update(&ctx, buffer, l);
+    }
+
+    fclose(fp);
+
+    // get the digest
+    md5_hex.resize(MD5_HASHBYTES);
+    MD5Final((unsigned char*)md5_hex.data(), &ctx);
+
+    return 0;
+}
+
+int md5_data(const std::vector<uint8_t>& data, std::vector<uint8_t>& md5_hex)
+{
+    MD5_CTX ctx;
+
+    MD5Init(&ctx);
+    MD5Update(&ctx, data.data(), data.size());
+
+    // get the digest
+    md5_hex.resize(MD5_HASHBYTES);
+    MD5Final((unsigned char*)md5_hex.data(), &ctx);
+
+    return 0;
+}
+
+int md5_data(const std::string& msg, std::vector<uint8_t>& md5_hex)
+{
+    MD5_CTX ctx;
+
+    MD5Init(&ctx);
+    MD5Update(&ctx, (unsigned char*) msg.data(), msg.size());
+
+    // get the digest
+    md5_hex.resize(MD5_HASHBYTES);
+    MD5Final((unsigned char*)md5_hex.data(), &ctx);
+
+    return 0;
+}
+
+int md5_data(const void *dat, int len, std::vector<uint8_t>& md5_hex)
+{
+    MD5_CTX ctx;
+
+    MD5Init(&ctx);
+    MD5Update(&ctx, (unsigned char*) dat, len);
+
+    // get the digest
+    md5_hex.resize(MD5_HASHBYTES);
+    MD5Final((unsigned char*)md5_hex.data(), &ctx);
+
+    return 0;
+}
+
+
+}} // end of namespace pi::crypto

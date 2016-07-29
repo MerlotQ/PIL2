@@ -1,8 +1,11 @@
-all:
-	make -f ../Makefile.simp
+TOPDIR 	       ?= ../..
 
-run:
-	make -f ../Makefile.simp run
+MAKE_TYPE       = bin
+BUILD_PATH      = $(TOPDIR)/build/$(MAKE_OS)/apps/$(HereFolderName)
 
-clean:
-	make -f ../Makefile.simp clean
+
+MODULES        += PI_BASE
+
+include $(TOPDIR)/scripts/make.conf
+
+

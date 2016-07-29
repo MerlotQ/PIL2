@@ -11,6 +11,10 @@
 #include <math.h>
 #endif
 
+#ifndef M_PI
+# define M_PI		3.14159265358979323846	/* pi */
+#endif
+
 namespace pi {
 
 #define NEAR_ZERO 1e-10
@@ -386,6 +390,7 @@ inline std::ostream& operator << (std::ostream& os,const SO3<Precision>& so3)
     return os;
 #endif
 }
+
 /// Write an SO3 from a stream
 /// @relates SO3
 template <typename Precision>

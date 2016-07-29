@@ -2,6 +2,7 @@
 #ifndef __UTILS_STR_H__
 #define __UTILS_STR_H__
 
+#include <stdint.h>
 #include <string>
 #include <vector>
 #include <ostream>
@@ -27,9 +28,29 @@ typedef std::vector<std::string> StringArray;
 ///
 /// \param intext - input text
 /// \param delims - delims
+///
 /// \return string array
 ///
+/// \note
+///
+///
 StringArray split_text(const std::string& intext, const std::string &delims);
+
+///
+/// \brief join_text
+///     Join all string items to a single string
+///
+/// \param sa           - string array
+/// \param delims       - seperator
+///
+/// \return joined string
+///
+/// \note
+///     sa = ["hello world", "Test file"]
+///     delims = " - "
+///
+///     otuput = "hello world - Test file"
+///
 std::string join_text(const StringArray& sa, const std::string& delims);
 
 ///
@@ -53,13 +74,20 @@ std::string str_tolower(std::string &s);
 std::string str_toupper(std::string &s);
 
 
+std::string itos(const int &i);
+std::string ftos(const float &f, int precision=6);
+std::string dtos(const double &d, int precision=6);
+
+
+
 int     str_to_int(const std::string &s);
 float   str_to_float(const std::string &s);
 double  str_to_double(const std::string &s);
 
-std::string itos(const int &i);
-std::string ftos(const float &f, int precision=6);
-std::string dtos(const double &d, int precision=6);
+inline std::string int_to_str(const int i) { return itos(i); }
+inline std::string float_to_str(const float f) { return ftos(f); }
+inline std::string double_to_str(const double d) { return dtos(d); }
+
 
 template <typename T>
 std::string to_str(const T& i)
@@ -70,8 +98,9 @@ std::string to_str(const T& i)
     return ost.str();
 }
 
-std::string buf2HexStr(u_char* buf,size_t size);
+std::string buf2HexStr(uint8_t* buf, size_t size);
 
 } // end of namespace pi
 
 #endif // end of __UTILS_STR_H__
+

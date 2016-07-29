@@ -10,9 +10,9 @@
 
 #define PLATEFORM_INCLUDE_SOURCE
 
-#if defined(PI_OS_FAMILY_WINDOWS)
+#if defined(PIL_OS_FAMILY_WINDOWS)
 #include "Thread_Win32.cpp"
-#elif defined(PI_VXWORKS)
+#elif defined(PIL_VXWORKS)
 #include "Thread_VX.cpp"
 #else
 #include "Thread_POSIX.cpp"

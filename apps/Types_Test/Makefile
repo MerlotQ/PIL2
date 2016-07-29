@@ -1,10 +1,7 @@
 ################################################################################
 #Applications Top Makefile.
 ################################################################################
-subdirs = Tests \
-          ClassLoader_Test \
-          Camera_Test CV_Test GUI_Test Svar_Test \
-          Timer_Test 
+subdirs = SE3_Test SIM3_Test SO3_Test
 
 
 all : $(subdirs)

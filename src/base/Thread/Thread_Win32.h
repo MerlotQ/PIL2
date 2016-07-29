@@ -5,11 +5,14 @@
 #include "../Environment.h"
 #include "../Types/SPtr.h"
 #include "../Platform/UnWindows.h"
+#include "../Debug/Exception.h"
+
 #include "Runnable.h"
 
 
 namespace pi {
 
+#define PIL_THREAD_STACK_SIZE 0
 
 class PIL_API ThreadImpl
 {
@@ -49,7 +52,7 @@ public:
     static int getMaxOSPriorityImpl(int policy);
     void setStackSizeImpl(int size);
     int getStackSizeImpl() const;
-    void startImpl(SharedPtr<Runnable> pTarget);
+    void startImpl(Runnable* pTarget);
     void joinImpl();
     bool joinImpl(long milliseconds);
     bool isRunningImpl() const;
@@ -94,7 +97,7 @@ private:
         DWORD _slot;
     };
 
-    SPtr<Runnable> _pRunnableTarget;
+    Runnable* _pRunnableTarget;
     HANDLE _thread;
     DWORD _threadId;
     int _prio;

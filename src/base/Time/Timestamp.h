@@ -6,6 +6,12 @@
 #include "../Types/Int.h"
 #include <ctime>
 
+#ifdef PIL_OS_FAMILY_WINDOWS
+#include "../Platform/UnWindows.h"
+#elif defined(PIL_OS_FAMILY_UNIX)
+#include "time.h"
+#endif
+
 
 namespace pi {
 

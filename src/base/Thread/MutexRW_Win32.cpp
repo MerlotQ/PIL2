@@ -1,7 +1,6 @@
 
 #ifdef PLATEFORM_INCLUDE_SOURCE
 
-
 #include "../Debug/Assert.h"
 #include "MutexRW_Win32.h"
 
@@ -9,7 +8,7 @@
 namespace pi {
 
 
-RWLockImpl::RWLockImpl(): _readers(0), _writersWaiting(0), _writers(0)
+MutexRWImpl::MutexRWImpl(): _readers(0), _writersWaiting(0), _writers(0)
 {
 	_mutex = CreateMutexW(NULL, FALSE, NULL);
 	if (_mutex == NULL)
@@ -25,7 +24,7 @@ RWLockImpl::RWLockImpl(): _readers(0), _writersWaiting(0), _writers(0)
 }
 
 
-RWLockImpl::~RWLockImpl()
+MutexRWImpl::~MutexRWImpl()
 {
 	CloseHandle(_mutex);
 	CloseHandle(_readEvent);
@@ -33,7 +32,7 @@ RWLockImpl::~RWLockImpl()
 }
 
 
-inline void RWLockImpl::addWriter()
+inline void MutexRWImpl::addWriter()
 {
 	switch (WaitForSingleObject(_mutex, INFINITE))
 	{
@@ -47,7 +46,7 @@ inline void RWLockImpl::addWriter()
 }
 
 
-inline void RWLockImpl::removeWriter()
+inline void MutexRWImpl::removeWriter()
 {
 	switch (WaitForSingleObject(_mutex, INFINITE))
 	{
@@ -61,7 +60,7 @@ inline void RWLockImpl::removeWriter()
 }
 
 
-void RWLockImpl::readLockImpl()
+void MutexRWImpl::readLockImpl()
 {
 	HANDLE h[2];
 	h[0] = _mutex;
@@ -81,7 +80,7 @@ void RWLockImpl::readLockImpl()
 }
 
 
-bool RWLockImpl::tryReadLockImpl()
+bool MutexRWImpl::tryReadLockImpl()
 {
 	for (;;)
 	{
@@ -103,7 +102,7 @@ bool RWLockImpl::tryReadLockImpl()
 }
 
 
-void RWLockImpl::writeLockImpl()
+void MutexRWImpl::writeLockImpl()
 {
 	addWriter();
 	HANDLE h[2];
@@ -128,7 +127,7 @@ void RWLockImpl::writeLockImpl()
 }
 
 
-bool RWLockImpl::tryWriteLockImpl()
+bool MutexRWImpl::tryWriteLockImpl()
 {
 	addWriter();
 	HANDLE h[2];
@@ -156,7 +155,7 @@ bool RWLockImpl::tryWriteLockImpl()
 }
 
 
-void RWLockImpl::unlockImpl()
+void MutexRWImpl::unlockImpl()
 {
 	switch (WaitForSingleObject(_mutex, INFINITE))
 	{
@@ -172,7 +171,7 @@ void RWLockImpl::unlockImpl()
 }
 
 
-DWORD RWLockImpl::tryReadLockOnce()
+DWORD MutexRWImpl::tryReadLockOnce()
 {
 	HANDLE h[2];
 	h[0] = _mutex;

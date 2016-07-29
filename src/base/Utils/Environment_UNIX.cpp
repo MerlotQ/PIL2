@@ -210,7 +210,8 @@ void EnvironmentImpl::nodeIdImpl(NodeId& id)
 		if (n == 17)
 		{
 			buffer[n] = 0;
-			if (std::sscanf(buffer, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &id[0], &id[1], &id[2], &id[3], &id[4], &id[5]) == 6)
+            if (std::sscanf(buffer, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
+                            &id[0], &id[1], &id[2], &id[3], &id[4], &id[5]) == 6)
 				return;
 		}
 	}	

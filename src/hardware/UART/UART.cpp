@@ -95,7 +95,7 @@ int UART::open(const std::string &portName, int baudRate)
     if( baudRate )        baud_rate = baudRate;
 
     // open port    
-    pd->m_hCom = CreateFile(
+    pd->m_hCom = CreateFileA(
                             port_name.c_str(),                  // COM port Name
                             GENERIC_READ | GENERIC_WRITE,       // read/write flags
                             0,                                  // comm devices must be opened w/exclusive-access
@@ -814,9 +814,9 @@ StringArray UART_getDeviceList(void)
 {
     StringArray devList;
 
-    LPCTSTR regPath_COM = "HARDWARE\\DEVICEMAP\\SERIALCOMM\\";
-    HKEY    hKey;
+    const char*   regPath_COM = "HARDWARE\\DEVICEMAP\\SERIALCOMM\\";
 
+    HKEY    hKey;
     LONG  Status, ret0;
     DWORD dwIndex = 0;
     CHAR  Name[64];
@@ -826,7 +826,7 @@ StringArray UART_getDeviceList(void)
     DWORD dwSizeofPortName;
 
     // open the regist key, if success then return ERROR_SUCCESS=0
-    ret0 = RegOpenKeyEx(HKEY_LOCAL_MACHINE, regPath_COM, 0, KEY_READ, &hKey);
+    ret0 = RegOpenKeyExA(HKEY_LOCAL_MACHINE, regPath_COM, 0, KEY_READ, &hKey);
 
     if( ret0 == ERROR_SUCCESS ) {
         do {
@@ -834,7 +834,7 @@ StringArray UART_getDeviceList(void)
             dwSizeofPortName = sizeof(szPortName);
 
             // read the contents
-            Status = RegEnumValue(hKey, dwIndex++, Name, &dwName, NULL, &Type,
+            Status = RegEnumValueA(hKey, dwIndex++, Name, &dwName, NULL, &Type,
                                   szPortName, &dwSizeofPortName);
             if( (Status == ERROR_SUCCESS) || (Status == ERROR_MORE_DATA) ) {
                 devList.push_back((char*) szPortName);

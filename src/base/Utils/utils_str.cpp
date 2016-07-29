@@ -296,7 +296,7 @@ std::string dtos(const double &i, int precision)
     return ost.str();
 }
 
-std::string buf2HexStr(u_char* buf,size_t size)
+std::string buf2HexStr(uint8_t* buf, size_t size)
 {
 //    char result[size*2];
     std::string result;
@@ -305,7 +305,7 @@ std::string buf2HexStr(u_char* buf,size_t size)
     for(size_t i=0;i<size;i++)
     {
 #if PIL_ARCH_LITTLE_ENDIAN
-        u_char c=buf[i];
+        uint8_t c=buf[i];
 #else
         u_char c=buf[size-1-i];
 #endif

@@ -6,12 +6,13 @@
 
 
 #if defined(PIL_OS_FAMILY_WINDOWS)
-    #include "PIL/UnWindows.h"
     #include <winsock2.h>
     #include <ws2tcpip.h>
+    #include "base/Platform/UnWindows.h"
+
     #define PIL_INVALID_SOCKET  INVALID_SOCKET
-    #define PIL_socket_t        SOCKET
-    #define PIL_socklen_t       int
+    #define pil_socket_t        SOCKET
+    #define pil_socklen_t       int
     #define pil_ioctl_request_t int
     #define pil_closesocket(s)  closesocket(s)
     #define PIL_EINTR           WSAEINTR

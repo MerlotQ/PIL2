@@ -2,9 +2,9 @@
 
 #define PLATEFORM_INCLUDE_SOURCE
 
-#if defined(PI_OS_FAMILY_WINDOWS)
+#if defined(PIL_OS_FAMILY_WINDOWS)
 #include "Event_Win32.cpp"
-#elif defined(PI_VXWORKS)
+#elif defined(PIL_VXWORKS)
 #include "Event_VX.cpp"
 #else
 #include "Event_POSIX.cpp"

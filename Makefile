@@ -26,7 +26,7 @@
 ################################################################################
 
 export MAKE             = make -j4
-export MAKE_OS          = linux # win32 mac
+export MAKE_OS          = linux
 
 export TOPDIR           = $(shell pwd)
 
@@ -57,9 +57,8 @@ apps: mkdirs libs
 mkdirs:
 	@if [ -d ./libs ];  then echo "dir 'libs' created"; else mkdir -p ./libs; fi
 	@if [ -d ./build ];  then echo "dir 'build' created"; else mkdir -p ./build; fi
-
 	
 clean :
-	rm -r $(BUILD_PATH)/* 
+	rm -r $(BUILD_PATH)/$(MAKE_OS)/* 
 
 

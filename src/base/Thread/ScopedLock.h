@@ -87,7 +87,7 @@ private:
     M* m;
 };
 
-}// namespace pi
+} // end of namespace pi
 
-#endif // SCOPEDLOCK_H
+#endif // end of SCOPEDLOCK_H
 

@@ -5,6 +5,7 @@
 //
 #include "PIL_VERSION.h"
 
+#if 0 // FIXME: just support mingw to compile under windows
 //
 // Ensure that PIL_DLL is default unless PIL_STATIC is defined
 //
@@ -32,30 +33,32 @@
 #endif
 
 
-#if !defined(PIL_API)
-	#define PIL_API
-#endif
-
-
 //
 // Automatically link pi_base library for windows.
 //
 #if defined(_MSC_VER)
-	#if !defined(PIL_NO_AUTOMATIC_LIBS) && !defined(PIL_EXPORTS)
+    #if !defined(PIL_NO_AUTOMATIC_LIBS) && !defined(PIL_EXPORTS)
         #if defined(PIL_DLL)
-			#if defined(_DEBUG)
-				#pragma comment(lib, "pi_based.lib")
-			#else
-				#pragma comment(lib, "pi_base.lib")
-			#endif
-		#else
-			#if defined(_DEBUG)
-				#pragma comment(lib, "pi_basemtd.lib")
-			#else
-				#pragma comment(lib, "pi_basemt.lib")
-			#endif
-		#endif
-	#endif
+            #if defined(_DEBUG)
+                #pragma comment(lib, "pi_based.lib")
+            #else
+                #pragma comment(lib, "pi_base.lib")
+            #endif
+        #else
+            #if defined(_DEBUG)
+                #pragma comment(lib, "pi_basemtd.lib")
+            #else
+                #pragma comment(lib, "pi_basemt.lib")
+            #endif
+        #endif
+    #endif
+#endif
+
+#endif
+
+
+#if !defined(PIL_API)
+	#define PIL_API
 #endif
 
 

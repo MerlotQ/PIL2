@@ -13,6 +13,7 @@ const DateTime::TimeDiff DateTime::MINUTES      =   60*DateTime::SECONDS;
 const DateTime::TimeDiff DateTime::HOURS        =   60*DateTime::MINUTES;
 const DateTime::TimeDiff DateTime::DAYS         =   24*DateTime::HOURS;
 
+
 inline double DateTime::toJulianDay(Timestamp::UtcTimeVal utcTime)
 {
     double utcDays = double(utcTime)/864000000000.0;

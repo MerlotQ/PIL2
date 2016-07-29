@@ -101,148 +101,6 @@ BOOST_LDFLAGS           = -lboost_serialization-mt -lboost_system-mt -lboost_thr
                           -lboost_program_options-mt -lboost_log-mt -lboost_log_setup-mt
 
 
-################################################################################
-# Poco
-################################################################################
-POCO_DIR                =
-POCO_CFLAGS             = -DPOCO_WIN32_UTF8
-POCO_LDFLAGS            = -lPocoFoundation -lPocoNet
-
-################################################################################
-# CVD
-################################################################################
-CVD_CFLAGS              =
-CVD_LDFLAGS             =
-
-
-################################################################################
-# TooN
-################################################################################
-TooN_CFLAGS             = -DHAS_TOON -I$(TOPDIR)/Thirdparty
-TooN_LDFLAGS            =   
-
-################################################################################
-# Eigen3
-################################################################################
-EIGEN3_CFLAGS           = -I$(TOPDIR)/Thirdparty/eigen3 
-EIGEN3_LDFLAGS          = 
-
-###############################################################################
-# suitesparse settings (-lcsparse)
-################################################################################
-SUITESPARSE_TOP         = /usr
-SUITESPARSE_CFLAGS      = -I$(SUITESPARSE_TOP)/include/suitesparse
-SUITESPARSE_LDFLAGS     = -L/usr/lib/x86_64-linux-gnu \
-                          -lcxsparse \
-                          -lcholmod -lamd -lcolamd -lcamd -lccolamd 
-
-################################################################################
-# G2O settings
-################################################################################
-G2O_TOP                 = $(TOPDIR)
-G2O_CFLAGS              = -I$(G2O_TOP) -I$(G2O_TOP)/Thirdparty/g2o
-G2O_LDFLAGS             = -L$(LIBS_PATH) -Wl,-rpath=. \
-                          -lg2o_core -lg2o_solver_cholmod -lg2o_solver_dense -lg2o_stuff \
-                          -lg2o_types_sba -lg2o_types_sim3 -lg2o_types_slam3d
-
-###############################################################################
-# PBA
-################################################################################
-PBA_TOP                 = $(TOPDIR)/Thirdparty/pba
-PBA_CFLAGS              = -I$(PBA_TOP)
-PBA_LDFLAGS             = -L$(LIBS_PATH) -Wl,-rpath,. -lpba
-
-################################################################################
-# SOPHUS settings
-################################################################################
-SOPHUS_TOP              = $(TOPDIR)/Thirdparty/sophus
-SOPHUS_CFLAGS           = -I$(SOPHUS_TOP)
-SOPHUS_LDFLAGS          = -Wl,-rpath=. -L$(LIBS_PATH) -lsophus
-
-################################################################################
-# Fast settings
-################################################################################
-FAST_TOP                = $(TOPDIR)/Thirdparty/fast
-FAST_CFLAGS             = -I$(FAST_TOP)/include
-FAST_LDFLAGS            = -Wl,-rpath=$(LIBS_PATH) -L$(LIBS_PATH) -lfast
-
-################################################################################
-# vikit settings
-################################################################################
-VIKIT_COMMON_TOP        = $(TOPDIR)/Thirdparty/vikit_common
-VIKIT_COMMON_CFLAGS     = -I$(VIKIT_COMMON_TOP)/include -DHAS_VIKIT
-VIKIT_COMMON_LDFLAGS    = -Wl,-rpath=. -L$(LIBS_PATH) -lvikit_common
-
-################################################################################
-# SVO settings
-################################################################################
-SVO_TOP                 = $(TOPDIR)/Thirdparty/svo
-SVO_CFLAGS              = -I$(SVO_TOP)/include
-SVO_LDFLAGS             = -L$(LIBS_PATH) -Wl,-rpath=. -lsvo
-
-
-################################################################################
-# LUA settings
-################################################################################
-LUA_TOP                 = $(TOPDIR)/Thirdparty/lua-5.1.5
-LUA_CFLAGS              = -I$(LUA_TOP)/src
-LUA_LDFLAGS             = -L$(LIBS_PATH) -Wl,-rpath=. -llua 
-
-################################################################################
-# alglib
-################################################################################
-ALGLIB_DIR              = $(TOPDIR)/Thirdparty/alglib
-ALGLIB_CFLAGS           = -I$(ALGLIB_DIR)
-ALGLIB_LDFLAGS          = -L$(ALGLIB_DIR)/lib -Wl,-rpath=. -lalglib
-
-
-################################################################################
-# BOW settings
-################################################################################
-BOW_TOP                 = $(TOPDIR)/Thirdparty/DBoW2
-BOW_CFLAGS              = -I$(BOW_TOP)
-BOW_LDFLAGS             = -L$(LIBS_PATH) -Wl,-rpath=. -lDBoW2
-
-
-################################################################################
-# MAVLINK settings
-################################################################################
-MAVLINK_TOP             = $(TOPDIR)/Thirdparty
-MAVLINK_CFLAGS          = -I$(TOPDIR)/Thirdparty
-MAVLINK_LDFLAGS         =
-
-
-################################################################################
-# OPMAP settings
-################################################################################
-OPMAP_TOP               = $(TOPDIR)/Thirdparty/opmapcontrol
-OPMAP_CFLAGS            = -I$(OPMAP_TOP)/core -I$(OPMAP_TOP)/internal -I$(OPMAP_TOP)/mapwidget
-OPMAP_LDFLAGS           = -L$(LIBS_PATH) -Wl,-rpath=. -lopmapwidget
-
-
-################################################################################
-# MindVision settings
-################################################################################
-MindVision_TOP          = /usr/local/mvux_camera_x86
-MindVision_CFLAGS       = -I$(MindVision_TOP)/include
-MindVision_LDFLAGS      = -L$(MindVision_TOP)/lib/gcc-4.4.3 -Wl,-rpath,$(MindVision_TOP)/lib/gcc-4.4.3 \
-                          -lMVSDK
-
-################################################################################
-# LEVMAR settings
-################################################################################
-LEVMAR_TOP              = $(TOPDIR)/Thirdparty/levmar-2.6
-LEVMAR_CFLAGS           = -I$(LEVMAR_TOP)/src -DLM_DBL_PREC
-LEVMAR_LDFLAGS          = -rdynamic -llevmar -llapack -lblas -lf2c
-
-
-################################################################################
-# ffmpeg settings
-################################################################################
-FFMPEG_TOP              =
-FFMPEG_CFLAGS           =
-FFMPEG_LDFLAGS          = -lavcodec -lavfilter -lavformat -lavresample -lavutil \
-                          -lpostproc -lswresample -lswscale
 
 
 ################################################################################
@@ -253,51 +111,39 @@ LIB_PI_INCP             = $(LIB_PI_TOP)/src
 LIB_PI_LIBP             = $(LIB_PI_TOP)/libs
 
 
-LIB_PI_CFLAGS           = -I$(LIB_PI_INCP) $(TooN_CFLAGS) $(POCO_CFLAGS)
+LIB_PI_CFLAGS           = -I$(LIB_PI_INCP)
 LIB_PI_LDFLAGS          = -Wl,-rpath=. -L$(LIB_PI_LIBP) \
-                          -lpi_lua -lpi_gui -lpi_network -lpi_slam -lpi_cv -lpi_hardware \
-                          -lpi_uav -lpi_base $(POCO_LDFLAGS)
+                          -lpi_gui -lpi_network -lpi_cv -lpi_hardware -lpi_base \
+                          -lIphlpapi -lWs2_32
 
 PIL_CFLAGS              = $(LIB_PI_CFLAGS)
 PIL_LDFLAGS             = $(LIB_PI_LDFLAGS)
 
 
 PI_BASE_CFLAGS          = $(LIB_PI_CFLAGS) $(POCO_CFLAGS)
-PI_BASE_LDFLAGS         = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_base $(POCO_LDFLAGS)
+PI_BASE_LDFLAGS         = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_base -lIphlpapi
 
 PI_GUI_CFLAGS           = $(LIB_PI_CFLAGS)
 PI_GUI_LDFLAGS          = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_gui
-
-PI_FUSION_CFLAGS        = $(LIB_PI_CFLAGS) -I$(LIB_PI_TOP)/src/fastfusion
-PI_FUSION_LDFLAGS       = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_fastfusion
-
-PI_DVO_CFLAGS           = $(LIB_PI_CFLAGS) 
-PI_DVO_LDFLAGS          = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_dvo
-
-PI_LSD_CFLAGS           = $(LIB_PI_CFLAGS) -I$(LIB_PI_TOP)/src/lsdslam
-PI_LSD_LDFLAGS          = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_lsdslam
 
 PI_CV_CFLAGS            = $(LIB_PI_CFLAGS)
 PI_CV_LDFLAGS           = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_cv
 
 PI_NETWORK_CFLAGS       = $(LIB_PI_CFLAGS)
-PI_NETWORK_LDFLAGS      = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_network
+PI_NETWORK_LDFLAGS      = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_network -lWs2_32
 
 PI_HARDWARE_CFLAGS      = $(LIB_PI_CFLAGS)
 PI_HARDWARE_LDFLAGS     = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_hardware
 
-PI_LUA_CFLAGS           = $(LIB_PI_CFLAGS)
-PI_LUA_LDFLAGS          = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_lua
 
-PI_UAV_CFLAGS           = $(LIB_PI_CFLAGS)
-PI_UAV_LDFLAGS          = -Wl,-rpath=. -L$(LIB_PI_LIBP) -lpi_uav
+PIL_BUILD_CFLAGS        = -DPIL_EXPORTS
+PIL_BUILD_LDFLAGS       = -lIphlpapi -lWs2_32
 
 
 ################################################################################
 # All of above
 ################################################################################
 ALL_CFLAGS              = $(SIMP_CFLAGS)  $(QT_CFLAGS)  $(QGLVIEWER_CFLAGS) $(OPENCV_CFLAGS)  \
-                          $(EIGEN3_CFLAGS) $(LUA_CGLAGS) \
                           $(LIB_PI_CFLAGS)
 ALL_LDFLAGS             = $(SIMP_LDFLAGS) $(QT_LDFLAGS) $(QGLVIEWER_LDFLAGS) $(OPENCV_LDFLAGS) \
                           $(LIB_PI_LDFLAGS) $(LUA_LDFLAGS) 

@@ -20,5 +20,5 @@
 #
 ################################################################################
 
-MODULES += OPENCV PI_BASE
+MODULES += OPENCV PI_BASE PIL_BUILD
 

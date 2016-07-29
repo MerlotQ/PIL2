@@ -1,4 +1,4 @@
-TOPDIR 	       ?= ../..
+TOPDIR 	       ?= ../../..
 
 MAKE_TYPE       = bin
 BUILD_PATH      = $(TOPDIR)/build/$(MAKE_OS)/apps/$(HereFolderName)

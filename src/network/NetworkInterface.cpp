@@ -3,17 +3,18 @@
 
 #ifdef PIL_NET_HAS_INTERFACE
 
-
+#include "../base/Debug/Assert.h"
+#include "../base/Debug/Exception.h"
 #include "DatagramSocket.h"
 #include "NetException.h"
 #include "base/Types/RefCountedObject.h"
 #include "base/Utils/utils_str.h"
 
 #if defined(PIL_OS_FAMILY_WINDOWS)
-    #if defined(PIL_WIN32_UTF8)
-        #include "Poco/UnicodeConverter.h"
-    #endif
-    #include "Poco/Error.h"
+//    #if defined(PIL_WIN32_UTF8)
+//        #include "Poco/UnicodeConverter.h"
+//    #endif
+//    #include "Poco/Error.h"
     #include <wincrypt.h>
     #include <iphlpapi.h>
     #include <ipifcons.h>
@@ -1082,19 +1083,20 @@ NetworkInterface::Map NetworkInterface::map(bool ipOnly, bool upOnly)
     do
     {
         pAddress = reinterpret_cast<IP_ADAPTER_ADDRESSES*>(memory.begin()); // leave in the loop, begin may change after resize
-        PIL_assert (memory.capacity() >= outBufLen);
+        pi_assert (memory.capacity() >= outBufLen);
         if (ERROR_BUFFER_OVERFLOW == (dwRetVal = GetAdaptersAddresses(family, flags, 0, pAddress, &outBufLen)))
             memory.resize(outBufLen, false); // adjust size and try again
         else if (ERROR_NO_DATA == dwRetVal) // no network interfaces found
             return result;
         else if (NO_ERROR != dwRetVal) // error occurred
-            throw SystemException(format("An error occurred while trying to obtain list of network interfaces: [%s]", Error::getMessage(dwRetVal)));
+            //throw SystemException(format("An error occurred while trying to obtain list of network interfaces: [%s]", Error::getMessage(dwRetVal)));
+            throw SystemException("An error occurred while trying to obtain list of network interfaces");
         else
             break;
     }
     while ((ERROR_BUFFER_OVERFLOW == dwRetVal) && (++iterations <= 2));
 
-    PIL_assert (NO_ERROR == dwRetVal);
+    pi_assert (NO_ERROR == dwRetVal);
     for (; pAddress; pAddress = pAddress->Next)
     {
         IPAddress address;
@@ -1224,7 +1226,7 @@ NetworkInterface::Map NetworkInterface::map(bool ipOnly, bool upOnly)
                         // if previous call did not do it, make last-ditch attempt for prefix and broadcast
                         if (prefixLength == 0 && pAddress->FirstPrefix)
                             prefixLength = pAddress->FirstPrefix->PrefixLength;
-                        PIL_assert (prefixLength <= 32);
+                        pi_assert (prefixLength <= 32);
                         if (broadcastAddress.isWildcard())
                         {
                             IPAddress mask(static_cast<unsigned>(prefixLength), IPAddress::IPv4);
@@ -1245,7 +1247,7 @@ NetworkInterface::Map NetworkInterface::map(bool ipOnly, bool upOnly)
     #else
                         broadcastAddress = getBroadcastAddress(pAddress->FirstPrefix, address, &prefixLength);
     #endif
-                        PIL_assert (prefixLength <= 32);
+                        pi_assert (prefixLength <= 32);
                         if (broadcastAddress.isWildcard())
                         {
                             IPAddress mask(static_cast<unsigned>(prefixLength), IPAddress::IPv4);

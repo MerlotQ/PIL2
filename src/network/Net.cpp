@@ -1,9 +1,13 @@
-#include "Net.h"
-
-
+#include "base/Environment.h"
+#include "base/Debug/Assert.h"
 #include "SocketDefs.h"
 #include "NetException.h"
 
+#if defined(PIL_OS_FAMILY_WINDOWS)
+    #include "base/Platform/UnWindows.h"
+#endif
+
+#include "Net.h"
 
 namespace pi{
 
@@ -51,7 +55,7 @@ void PIL_API uninitializeNetwork()
             }
             catch (...)
             {
-                pil_unexpected();
+                pi_unexpected();
             }
         }
     };

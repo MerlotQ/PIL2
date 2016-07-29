@@ -1,3 +1,6 @@
+#ifndef __UNWINDOWS_H__
+#define __UNWINDOWS_H__
+
 #include <windows.h>
 
 
@@ -51,3 +54,7 @@
 #undef GetVersion
 #undef GetObject
 #endif // PIL_NO_UNWINDOWS
+
+
+#endif // end of __UNWINDOWS_H__
+

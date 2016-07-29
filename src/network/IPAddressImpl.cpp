@@ -441,8 +441,10 @@ std::string IPv6AddressImpl::toString() const
         if (_scope > 0)
         {
             result.append("%");
+
 #if defined(_WIN32)
-            NumberFormatter::append(result, _scope);
+            //NumberFormatter::append(result, _scope);
+            result.append(pi::itos(_scope));
 #else
             char buffer[IFNAMSIZ];
             if (if_indextoname(_scope, buffer))
@@ -505,7 +507,7 @@ unsigned IPv6AddressImpl::prefixLength() const
     }
     return 0;
 #else
-#warning prefixLength() not implemented
+    #warning prefixLength() not implemented
     throw NotImplementedException("prefixLength() not implemented");
 #endif
 }

@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "base/Svar/Svar_Inc.h"
-#include "base/time/Global_Timer.h"
-#include "base/types/SE3.h"
+#include "base/Svar/Svar.h"
+#include "base/Time/Global_Timer.h"
+#include "base/Types/SE3.h"
 
 #include  <TooN/se3.h>
 

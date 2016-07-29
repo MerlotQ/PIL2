@@ -10,11 +10,11 @@
 namespace pi {
 
 
-class PIL_API RWLockImpl
+class PIL_API MutexRWImpl
 {
 protected:
-	RWLockImpl();
-	~RWLockImpl();
+    MutexRWImpl();
+    ~MutexRWImpl();
 	void readLockImpl();
 	bool tryReadLockImpl();
 	void writeLockImpl();
@@ -35,7 +35,8 @@ private:
 };
 
 
-} // namespace pi
+} // end of namespace pi
 
 
-#endif // __MUTEXRW_WIN32_H__
+#endif // end of __MUTEXRW_WIN32_H__
+

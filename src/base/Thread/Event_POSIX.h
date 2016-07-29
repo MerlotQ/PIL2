@@ -54,7 +54,8 @@ inline void EventImpl::resetImpl()
 }
 
 
-} // namespace PIL
+} // namespace pi
 
 
 #endif // PIL_Event_POSIX_INCLUDED
+

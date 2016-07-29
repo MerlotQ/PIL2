@@ -1,7 +1,8 @@
 #ifndef PIL_THREAD_H
 #define PIL_THREAD_H
 
-#include "base/Environment.h"
+#include "../Environment.h"
+
 #include "Runnable.h"
 #include "Mutex.h"
 #include "MutexRW.h"
@@ -342,3 +343,4 @@ inline Thread::TID Thread::currentTid()
 } // namespace pi
 
 #endif // Foundation_Thread_INCLUDED
+

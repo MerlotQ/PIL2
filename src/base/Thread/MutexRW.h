@@ -5,11 +5,11 @@
 #include "../Debug/Exception.h"
 
 #if defined(PIL_OS_FAMILY_WINDOWS)
-#if defined(_WIN32_WCE)
-#include "MutexRW_WINCE.h"
-#else
-#include "MutexRW_Win32.h"
-#endif
+    #if defined(_WIN32_WCE)
+    #include "MutexRW_WINCE.h"
+    #else
+    #include "MutexRW_Win32.h"
+    #endif
 #elif defined(PIL_ANDROID)
 #include "MutexRW_Android.h"
 #elif defined(PIL_VXWORKS)
@@ -20,42 +20,42 @@
 
 #include "ScopedLock.h"
 
-namespace pi{
+namespace pi {
 
 class PIL_API MutexRW: private MutexRWImpl
     /// A reader writer lock allows multiple concurrent
     /// readers or one exclusive writer.
 {
 public:
-    MutexRW(){}
+    MutexRW() {}
         /// Creates the Reader/Writer lock.
 
-    ~MutexRW(){}
+    ~MutexRW() {}
         /// Destroys the Reader/Writer lock.
 
-    void lock(){writeLock();}
+    void lock() { writeLock(); }
         /// Default is write lock
 
-    void readLock(){readLockImpl();}
+    void readLock() { readLockImpl(); }
         /// Acquires a read lock. If another thread currently holds a write lock,
         /// waits until the write lock is released.
 
-    bool tryReadLock(){return tryReadLockImpl();}
+    bool tryReadLock() { return tryReadLockImpl(); }
         /// Tries to acquire a read lock. Immediately returns true if successful, or
         /// false if another thread currently holds a write lock.
 
-    void writeLock(){return writeLockImpl();}
+    void writeLock() { writeLockImpl(); }
         /// Acquires a write lock. If one or more other threads currently hold
         /// locks, waits until all locks are released. The results are undefined
         /// if the same thread already holds a read or write lock
 
-    bool tryWriteLock(){return tryWriteLockImpl();}
+    bool tryWriteLock() {return tryWriteLockImpl(); }
         /// Tries to acquire a write lock. Immediately returns true if successful,
         /// or false if one or more other threads currently hold
         /// locks. The result is undefined if the same thread already
         /// holds a read or write lock.
 
-    void unlock(){return unlockImpl();}
+    void unlock() { unlockImpl(); }
         /// Releases the read or write lock.
 
 private:
@@ -66,5 +66,6 @@ private:
 typedef WriteLock<MutexRW> WriteMutex;
 typedef ReadLock<MutexRW>  ReadMutex;
 
-}
+} // end of namespace pi
+
 #endif // MUTEXRW_H

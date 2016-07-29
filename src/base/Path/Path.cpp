@@ -1,6 +1,9 @@
 
-#include "Path.h"
 #include <algorithm>
+#include <iostream>
+
+#include "../Debug/Assert.h"
+#include "Path.h"
 
 
 #define PLATEFORM_INCLUDE_SOURCE

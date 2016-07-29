@@ -62,7 +62,7 @@ ThreadImpl::ThreadImpl():
     _thread(0),
     _threadId(0),
     _prio(PRIO_NORMAL_IMPL),
-    _stackSize(POCO_THREAD_STACK_SIZE)
+    _stackSize(PIL_THREAD_STACK_SIZE)
 {
 }
 
@@ -93,7 +93,7 @@ void ThreadImpl::setOSPriorityImpl(int prio, int /* policy */)
 }
 
 
-void ThreadImpl::startImpl(SharedPtr<Runnable> pTarget)
+void ThreadImpl::startImpl(Runnable* pTarget)
 {
     if (isRunningImpl())
         throw SystemException("thread already running");

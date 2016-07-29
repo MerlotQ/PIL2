@@ -109,7 +109,7 @@ void PathImpl::listRootsImpl(std::vector<std::string>& roots)
 {
 	roots.clear();
 	char buffer[128];
-	DWORD n = GetLogicalDriveStrings(sizeof(buffer) - 1, buffer);
+    DWORD n = GetLogicalDriveStringsA(sizeof(buffer) - 1, buffer);
 	char* it = buffer;
 	char* end = buffer + (n > sizeof(buffer) ? sizeof(buffer) : n);
 	while (it < end)
@@ -125,7 +125,7 @@ bool PathImpl::pathExist(const std::string& path)
 {
     if( path.size() == 0 ) return false;
 
-    DWORD attr = GetFileAttributes(_path.c_str());
+    DWORD attr = GetFileAttributesA(path.c_str());
     if (attr == INVALID_FILE_ATTRIBUTES)
     {
         switch (GetLastError())
@@ -149,30 +149,6 @@ int PathImpl::cmd(const std::string& commands)
 {
     return system(commands.c_str());
 }
-
-bool PathImpl::pathExist(const std::string& path)
-{
-    if( path.size() == 0 ) return false;
-
-    DWORD attr = GetFileAttributes(_path.c_str());
-    if (attr == INVALID_FILE_ATTRIBUTES)
-    {
-        switch (GetLastError())
-        {
-        case ERROR_FILE_NOT_FOUND:
-        case ERROR_PATH_NOT_FOUND:
-        case ERROR_NOT_READY:
-        case ERROR_INVALID_DRIVE:
-            return false;
-        default:
-            //handleLastErrorImpl(_path);
-            return false;
-        }
-    }
-
-    return true;
-}
-
 
 int _mkdir(const std::string& p)
 {
@@ -225,7 +201,7 @@ bool PathImpl::rename(const std::string& pOld, const std::string& pNew)
 
 bool PathImpl::lsdir(const std::string& path,std::vector<std::string>& dl)
 {
-    WIN32_FIND_DATA fdFile;
+    _WIN32_FIND_DATAA fdFile;
     HANDLE hFind = NULL;
 
     char sPath[2048];
@@ -233,7 +209,7 @@ bool PathImpl::lsdir(const std::string& path,std::vector<std::string>& dl)
     //Specify a file mask. *.* = We want everything!
     sprintf(sPath, "%s\\*.*", path.c_str());
 
-    if((hFind = FindFirstFile(sPath, &fdFile)) == INVALID_HANDLE_VALUE) return false;
+    if((hFind = FindFirstFileA(sPath, &fdFile)) == INVALID_HANDLE_VALUE) return false;
 
     do
     {
@@ -246,7 +222,7 @@ bool PathImpl::lsdir(const std::string& path,std::vector<std::string>& dl)
             dl.push_back(fdFile.cFileName);
         }
     }
-    while(FindNextFile(hFind, &fdFile)); //Find the next file.
+    while(FindNextFileA(hFind, &fdFile)); //Find the next file.
 
     FindClose(hFind); //Always, Always, clean things up!
 
@@ -264,7 +240,7 @@ int PathImpl::is_file(const std::string& path)
 
 int PathImpl::is_dir(const std::string& path)
 {
-    DWORD attr = GetFileAttributes(path.c_str());
+    DWORD attr = GetFileAttributesA(path.c_str());
     if (attr == INVALID_FILE_ATTRIBUTES)
         return -1;
 

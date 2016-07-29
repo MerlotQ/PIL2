@@ -141,20 +141,20 @@ void Win3D::loadProjectionMatrix()
         return ;
     }
 
-    double left,right,top,bottom,near,far;
+    double left,right,top,bottom,near_,far_;
     {
-        near=camera()->zNear();
-        far=camera()->zFar();
+        near_=camera()->zNear();
+        far_=camera()->zFar();
 
-        left=-cx/fx*near;
-        right=(width()-cx)/fx*near;
-        bottom=-(height()-cy)/fy*near;
-        top=(cy)/fy*near;
+        left=-cx/fx*near_;
+        right=(width()-cx)/fx*near_;
+        bottom=-(height()-cy)/fy*near_;
+        top=(cy)/fy*near_;
     }
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(left,right,bottom,top,near,far);
+    glFrustum(left,right,bottom,top,near_,far_);
 }
 
 void Win3D::preDraw()

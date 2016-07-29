@@ -105,4 +105,4 @@ bool EventImpl::waitImpl(long milliseconds)
 } // namespace PIL
 
 
-#endif
+#endif // end of PLATEFORM_INCLUDE_SOURCE

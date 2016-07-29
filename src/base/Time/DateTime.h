@@ -2,10 +2,11 @@
 #define PIL_DateTime_INCLUDED
 
 
+#include <iostream>
+
 #include "../Environment.h"
 #include "Timestamp.h"
-//#include "Timespan.h"
-#include "iostream"
+
 
 namespace pi {
 
@@ -43,6 +44,7 @@ class PIL_API DateTime
 public:
     typedef Timestamp::TimeDiff TimeDiff;
     typedef Timestamp::TimeDiff Timespan;
+
     enum Months
         /// Symbolic names for month numbers (1 to 12).
     {

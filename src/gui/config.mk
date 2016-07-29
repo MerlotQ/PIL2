@@ -23,5 +23,5 @@
 
 MOC_FILES    += widgets/qFlightInstruments widgets/qcustomplot widgets/SvarTable \
                 gl/SignalHandle gl/Win3D 
-MODULES      += PI_BASE QT QGLVIEWER OPENGL
+MODULES      += PI_BASE PIL_BUILD QT QGLVIEWER OPENGL
 

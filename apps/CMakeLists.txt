@@ -1,7 +1,10 @@
 set(APPS2BUILD Camera_Test ClassLoader_Test CV_Test GUI_Test Svar_Test Timer_Test Tests)
 
+file(GLOB APPS2BUILD "*")
+message("APPS2BUILD: " ${APPS2BUILD})
+
 foreach(APPNAME ${APPS2BUILD})
-	if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/${APPNAME})
+	if(IS_DIRECTORY ${APPNAME})
 		add_subdirectory(${APPNAME})
 	endif()
 endforeach()

@@ -59,6 +59,6 @@ mkdirs:
 	@if [ -d ./build ];  then echo "dir 'build' created"; else mkdir -p ./build; fi
 	
 clean :
-	rm -r $(BUILD_PATH)/$(MAKE_OS)/* 
+	-rm -r $(BUILD_PATH)/$(MAKE_OS)/* 
 
 

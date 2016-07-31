@@ -25,7 +25,6 @@
 #   sub-project configure
 ################################################################################
 
-MODULES         += PTHREAD PIL_BUILD
-INCLUDE_PATH    += $(LIB_PI_TOP)/src
+MODULES         += BASIC PTHREAD PIL_BUILD
 
 

@@ -20,227 +20,44 @@
 #
 ################################################################################
 
+
 ################################################################################
 # Platform Settings
 ################################################################################
-MAKE_OS     = mingw
 
-CC          = gcc
-CXX         = g++
-NVCC        = nvcc
-AR          = ar
+MAKE_OS        ?= mingw
+MAKE_TYPE      ?= bin #shared static
 
-MOC         = moc
-RCC         = rcc
+MAKE           ?= make
+CC             ?= gcc
+CXX            ?= g++
+NVCC           ?= nvcc
+AR             ?= ar
+RANLIB         ?= ranlib
 
-OBJEXT      = .o
-EXEEXT      = .exe
-ALIBEXT     = .a
-DLLEXT      = .dll
+MOC            ?= moc
+RCC            ?= rcc
 
-################################################################################
-# Library Settings
-################################################################################
+OBJ_EXT        ?= .o
+EXE_EXT        ?= .exe
+ALIB_EXT       ?= .a
+SLIB_EXT       ?= .dll
+SLIB_CFLAGS    ?= -fPIC -shared
+LIB_PREFIX     ?= lib
 
-# libray configure file
-LIBRARY_CONFIG_FILE ?= $(TOPDIR)/scripts/LIBS_CONFIG.$(MAKE_OS)
-sinclude $(LIBRARY_CONFIG_FILE)
-
-# default module
-MODULES         ?= SIMP
-
-# default CFLAGS & LDFLAGS
-COMPILEFLAGS    ?= $(SIMP_CFLAGS)
-LINKFLAGS       ?= $(SIMP_LDFLAGS)
 
 ################################################################################
 # Path Settings
 ################################################################################
 
 Here_Path       = $(shell pwd)
-HereFolderName  = $(shell pwd |sed 's/^\(.*\)[/]//' )
+HereFolderName  = $(shell pwd | sed 's/^\(.*\)[/]//')
 
-# default paths can be changed by file 'config.mk'
-sinclude ./config.mk
+TOPDIR		   ?= .
+SRC_PATH       ?= .
+BUILD_PATH	   ?= $(TOPDIR)/build/$(MAKE_OS)
+LIBS_PATH	   ?= $(TOPDIR)/libs
+BIN_PATH       ?= $(TOPDIR)/bin
 
-TOPDIR		?= .
-SRC_PATH    ?= .
-BUILD_PATH	?= $(TOPDIR)/build/mingw
-LIBS_PATH	?= $(TOPDIR)/libs
-BIN_PATH    ?= $(TOPDIR)/bin
-OUTPUT      ?= $(HereFolderName)
-
-MAKE_TYPE   ?= bin #shared static
-
-
-LIB_PREFIX  ?= lib
-
-ifeq "$(MAKE_TYPE)" "bin"
-OUTPUT_NAME ?= $(BIN_PATH)/$(OUTPUT)$(EXEEXT)
-endif
-
-ifeq "$(MAKE_TYPE)" "shared"
-COMPILEFLAGS+= 
-OUTPUT_NAME ?= $(LIBS_PATH)/$(LIB_PREFIX)$(OUTPUT)$(DLLEXT)
-OUTPUT_EX   ?= $(LIBS_PATH)/$(LIB_PREFIX)$(OUTPUT)$(ALIBEXT)
-LINKFLAGS   += -shared -Wl,--out-implib,$(OUTPUT_EX)
-endif
-
-ifeq "$(MAKE_TYPE)" "static"
-OUTPUT_NAME ?= $(LIBS_PATH)/$(LIB_PREFIX)$(OUTPUT)$(ALIBEXT)
-LINKFLAGS   += 
-endif
-
-
-################################################################################
-# Source Files Config
-################################################################################
-
-#Autoset things
-CPP_FILES       ?= $(shell find $(SRC_PATH) -name \*.cpp)
-CC_FILES        ?= $(shell find $(SRC_PATH) -name \*.cc)
-C_FILES         ?= $(shell find $(SRC_PATH) -name \*.c)        
-H_FILES         ?= $(shell find $(SRC_PATH) -name \*.h) 
-
-ifneq "$(SRC_FILES)" "" 
-OBJ_FILES       ?= $(patsubst %.cpp,%.o,$(SRC_FILES))
-else
-OBJ_FILES       += $(patsubst %.c,%.o,$(C_FILES))
-OBJ_FILES       += $(patsubst %.cc,%.o,$(CC_FILES))
-OBJ_FILES       += $(patsubst %.cpp,%.o,$(CPP_FILES))
-endif
-
-OBJ_FILES_HERE   = $(patsubst ./%,%,$(OBJ_FILES))
-OBJ_FILES_BUILD  = $(addprefix $(BUILD_PATH)/,$(OBJ_FILES_HERE))
-
-OBJ_FILES_DIRS   =
-
-COMPILEFLAGS    += $(foreach n,$(MODULES),$($(n)_CFLAGS))
-LINKFLAGS       += $(foreach n,$(MODULES),$($(n)_LDFLAGS))
-
-COMPILEFLAGS    += $(foreach n,$(INCLUDE_PATH),-I$(n))
-COMPILEFLAGS    += $(foreach n,$(DEFINES),-D$($(n)))
-
-
-################################################################################
-# QT options
-################################################################################
-
-MOC_FILES_CPP_  += $(foreach n,$(MOC_FILES),$(n).moc.cpp)
-MOC_FILES_CPP   += $(addprefix $(BUILD_PATH)/,$(MOC_FILES_CPP_))
-MOC_FILES_OBJ   += $(foreach n,$(MOC_FILES),$(n).moc.o)
-OBJ_FILES_BUILD += $(addprefix $(BUILD_PATH)/,$(MOC_FILES_OBJ))
-
-QRC_FILES_CPP_  += $(foreach n,$(QRC_FILES),$(n).qrc.cpp)
-QRC_FILES_CPP   += $(addprefix $(BUILD_PATH)/,$(QRC_FILES_CPP_))
-QRC_FILES_OBJ   += $(foreach n,$(QRC_FILES),$(n).qrc.o)
-OBJ_FILES_BUILD += $(addprefix $(BUILD_PATH)/,$(QRC_FILES_OBJ))
-
-################################################################################
-# CUDA options
-################################################################################
-ifneq "$(CUDA_PATH)" ""
-sinclude $(TOPDIR)/scripts/CUDA.linux
-endif
-
-################################################################################
-# Compile things
-################################################################################
-ALL : all
-all : output_dirs object_dirs $(MOC_FILES_CPP) $(OUTPUT_NAME)
-
-ifeq ("$(MAKE_TYPE)", "static")
-$(OUTPUT_NAME) : $(OBJ_FILES_BUILD)
-	$(AR) rcs $@ $^
-else
-$(OUTPUT_NAME) :$(OBJ_FILES_BUILD)
-	$(CXX) -o $@ $^ $(COMPILEFLAGS) $(LINKFLAGS)
-endif
-
-# Auto dependencies
-
-$(BUILD_PATH)/%.d: %.c
-	@mkdir -p $$(dirname $@)   
-	@set -e; rm -f $@; \
-	$(CC) -MM  $< $(COMPILEFLAGS) $(C_FLAGS) > $@.$$$$; \
-	sed 's,\($*\)\.o[ :]*,$(BUILD_PATH)/\1.o $@ : ,g' < $@.$$$$ > $@; \
-	rm -f $@.$$$$
-
-$(BUILD_PATH)/%.d: %.cc
-	@mkdir -p $$(dirname $@)  
-	@set -e; rm -f $@; \
-	$(CXX) -MM  $< $(COMPILEFLAGS) $(CXX_FLAGS) > $@.$$$$; \
-	sed 's,\($*\)\.o[ :]*,$(BUILD_PATH)/\1.o $@ : ,g' < $@.$$$$ > $@; \
-	rm -f $@.$$$$
-
-$(BUILD_PATH)/%.d: %.cpp
-	@mkdir -p $$(dirname $@)  
-	@set -e; rm -f $@; \
-	$(CXX) -MM  $< $(COMPILEFLAGS) $(CXX_FLAGS) > $@.$$$$; \
-	sed 's,\($*\)\.o[ :]*,$(BUILD_PATH)/\1.o $@ : ,g' < $@.$$$$ > $@; \
-	rm -f $@.$$$$
-
-sinclude $(OBJ_FILES_BUILD:.o=.d)
-
-# Default rules
-$(BUILD_PATH)/%.o: %.cc %.h $(BUILD_PATH)/%.d
-	$(CXX) -o $@  -c $< $(COMPILEFLAGS) $(CXX_FLAGS)
-
-$(BUILD_PATH)/%.o: %.cpp %.h $(BUILD_PATH)/%.d
-	$(CXX) -o $@  -c $< $(COMPILEFLAGS) $(CXX_FLAGS)
-
-$(BUILD_PATH)/%.o: %.c %.h $(BUILD_PATH)/%.d
-	$(CC) -o $@  -c $< $(COMPILEFLAGS) $(C_FLAGS)
-
-$(BUILD_PATH)/%.o: %.cpp $(BUILD_PATH)/%.d
-	$(CXX) -o $@  -c $< $(COMPILEFLAGS) $(CXX_FLAGS)
-
-$(BUILD_PATH)/%.o: %.cc $(BUILD_PATH)/%.d
-	$(CXX) -o $@  -c $< $(COMPILEFLAGS) $(CXX_FLAGS)
-
-$(BUILD_PATH)/%.o: %.c $(BUILD_PATH)/%.d
-	$(CC) -o $@  -c $< $(COMPILEFLAGS) $(C_FLAGS)
-
-# MOC rules
-$(BUILD_PATH)/%.moc.cpp : %.h
-	$(MOC) $< -o $@  $(MOCFLAGS) 
-	
-$(BUILD_PATH)/%.moc.o: $(BUILD_PATH)/%.moc.cpp
-	$(CXX) -c $^ -o $@  $(COMPILEFLAGS) $(CXX_FLAGS)
-
-# Resource rules
-# FIXME: check do not use -name is or not effect qrc 
-#   $(RCC) -name $(basename $<) $< -o $@ 
-$(BUILD_PATH)/%.qrc.cpp : %.qrc
-	$(RCC) $< -o $@ 
-	
-$(BUILD_PATH)/%.qrc.o: $(BUILD_PATH)/%.qrc.cpp
-	$(CXX) -c $^ -o $@  $(COMPILEFLAGS) $(CXX_FLAGS)
-
-# CUDA rules
-$(BUILD_PATH)/%.cuda.o : %.cu
-	$(NVCC) $(CUDAFLAGS) $^ -o $@
-
-
-# Rules to make target dirs
-.PHONY:object_dirs output_dirs clean run
-object_dirs:
-	@for dir in $(OBJ_FILES_BUILD); do \
-	mkdir -p $$(dirname $$dir); done
-
-output_dirs:
-	@for dir in $(OUTPUT_NAME); do \
-	mkdir -p $$(dirname $$dir); done
-
-clean :
-	rm -f $(OUTPUT_NAME) $(shell find $(BUILD_PATH) -name \*.o) $(shell find $(BUILD_PATH) -name \*.d) $(shell find $(BUILD_PATH) -name \*.moc.cpp)
-
-run :
-	./$(OUTPUT_NAME)
-
-
-################################################################################
-# Dependents
-################################################################################
-sinclude ./depend.mk
+OUTPUT         ?= $(HereFolderName)
 

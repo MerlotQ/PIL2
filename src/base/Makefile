@@ -27,5 +27,3 @@ all:
 clean:
 	$(MAKE) -f ../Makefile.lib clean
 
-clean_tmp:
-	$(MAKE) -f ../Makefile.lib clean_tmp

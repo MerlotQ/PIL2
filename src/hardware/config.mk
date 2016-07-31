@@ -20,5 +20,5 @@
 #
 ################################################################################
 
-MODULES += PI_BASE PIL_BUILD
+MODULES += BASIC PI_BASE PIL_BUILD
 

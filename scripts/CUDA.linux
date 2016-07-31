@@ -34,19 +34,12 @@ else ifeq ($(TARGET_ARCH),armv7l)
 else
     $(error ERROR - unsupported value $(TARGET_ARCH) for TARGET_ARCH!)
 endif
+
 ifneq ($(TARGET_ARCH),$(HOST_ARCH))
     ifeq (,$(filter $(HOST_ARCH)-$(TARGET_ARCH),aarch64-armv7l x86_64-armv7l x86_64-aarch64 x86_64-ppc64le))
         $(error ERROR - cross compiling from $(HOST_ARCH) to $(TARGET_ARCH) is not supported!)
     endif
 endif
-
-
-CU_FILES	?= $(shell find $(SRC_PATH) -name \*.cu)
-CUH_FILES	?= $(shell find $(SRC_PATH) -name \*.cuh)
-
-CUDA_FILE_OBJ   += $(patsubst ./%.cu,%.cuda.o,$(CU_FILES))
-CUDA_BUILD_OBJ	?= $(foreach n,$(CUDA_FILE_OBJ) ,$(BUILD_PATH)/$(n))
-OBJ_FILES_BUILD += $(CUDA_BUILD_OBJ)
 
 
 # Gencode arguments
@@ -68,18 +61,14 @@ GENCODE_FLAGS += -gencode arch=compute_$(HIGHEST_SM),code=compute_$(HIGHEST_SM)
 endif
 endif
 
-NVCC          	:= $(CUDA_PATH)/bin/nvcc -ccbin $(HOST_COMPILER)
+NVCC            = $(CUDA_PATH)/bin/nvcc -ccbin $(HOST_COMPILER)
 
-COMPILEFLAGS	+= -I$(CUDA_PATH)/include -DHAS_CUDA
-LINKFLAGS	+= -Wl,-rpath=$(CUDA_PATH)/lib${TARGET_SIZE} -L$(CUDA_PATH)/lib${TARGET_SIZE} -lcudart
+CUDA_CFLAGS    += -I$(CUDA_PATH)/include -DHAS_CUDA
+CUDA_LDFLAGS   += -Wl,-rpath=$(CUDA_PATH)/lib${TARGET_SIZE} -L$(CUDA_PATH)/lib${TARGET_SIZE} -lcudart
 
-CUDAFLAGS	+= -arch sm_35 -c -Xptxas -v -Xcompiler -m${TARGET_SIZE},-pipe -DHAS_CUDA -I$(CUDA_PATH)/include
+CUDA_CUFLAGS   += -arch sm_35 -Xptxas -v -Xcompiler -m${TARGET_SIZE},-pipe
 
 ifeq "$(MAKE_TYPE)" "shared"
-CUDAFLAGS	+= -Xcompiler -fPIC -shared
+CUDA_CUFLAGS   += -Xcompiler -fPIC -shared
 endif
-
-CUDAFLAGS    	+= $(foreach n,$(MODULES),$($(n)_CFLAGS))
-CUDAFLAGS   	+= $(foreach n,$(INCLUDE_PATH),-I$(n))
-CUDAFLAGS	+= $(foreach n,$(DEFINES),-D$($(n)))
 

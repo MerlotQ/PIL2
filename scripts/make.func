@@ -1,0 +1,293 @@
+################################################################################
+#
+#  Pilot Intelligence Library
+#    http://www.pilotintelligence.com/
+#
+#  ----------------------------------------------------------------------------
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+################################################################################
+
+
+
+################################################################################
+# Function for build one target
+################################################################################
+
+define build_one_target
+
+## CFLAGS & LDFALGS
+$1_CFLAGS      += $$(foreach n,$$($1_MODULES),$$($$(n)_CFLAGS))
+$1_CFLAGS      += $$(foreach n,$$($1_INCLUDE_PATH),-I$$(n))
+$1_CFLAGS      += $$(foreach n,$$($1_DEFINES),-D$$(n))
+
+$1_LDFALGS     += $$(foreach n,$$($1_MODULES),$$($$(n)_LDFLAGS))
+$1_LDFALGS     += $$(foreach n,$$($1_LIB_PATH),-L$$(n))
+$1_LDFALGS     += $$(foreach n,$$($1_LIBS),-l$$(n))
+
+## project variables
+ifndef $1_MAKE_TYPE
+$1_MAKE_TYPE    = $$(strip $$(MAKE_TYPE))
+else
+$1_MAKE_TYPE   := $$(strip $$($1_MAKE_TYPE))
+endif
+
+ifndef $1_BUILD_PATH
+$1_BUILD_PATH   = $$(BUILD_PATH)
+endif
+
+ifndef $1_BIN_PATH
+$1_BIN_PATH     = $$(BIN_PATH)
+endif
+
+ifndef $1_LIBS_PATH
+$1_LIBS_PATH     = $$(LIBS_PATH)
+endif
+
+
+## OBJS
+$1_OBJS         = $$(patsubst %.c,%$$(OBJ_EXT),$$($1_SRC))
+$1_OBJS        := $$(patsubst %.cc,%$$(OBJ_EXT),$$($1_OBJS))
+$1_OBJS        := $$(patsubst %.cpp,%$$(OBJ_EXT),$$($1_OBJS))
+
+## Qt MOC and QRC files
+$1_MOC_CPP_     = $$(foreach n,$$($1_MOC_FILES),$$(n).moc.cpp)
+$1_MOC_CPP      = $$(addprefix $$($1_BUILD_PATH)/,$$($1_MOC_CPP_))
+$1_MOC_OBJ      = $$(foreach n,$$($1_MOC_FILES),$$(n).moc$$(OBJ_EXT))
+
+$1_QRC_CPP_     = $$(foreach n,$$($1_RQC_FILES),$$(n).qrc.cpp)
+$1_QRC_CPP      = $$(addprefix $$($1_BUILD_PATH)/,$$($1_QRC_CPP_))
+$1_QRC_OBJ      = $$(foreach n,$$($1_RQC_FILES),$$(n).qrc$$(OBJ_EXT))
+
+$1_OBJS        += $$($1_MOC_OBJ) $$($1_QRC_OBJ)
+$1_OBJS_        = $$(patsubst ./%,%,$$($1_OBJS))
+
+
+## CUDA files
+ifneq ("$$(strip $$($1_CU_FILES))","")
+$1_CU_OBJS      = $$(patsubst ./%.cu,%.cuda.o,$$($1_CU_FILES))
+$1_CU_BUILD_OBJS= $$(foreach n,$$($1_CU_OBJS),$$($1_BUILD_PATH)/$$(n))
+$1_OBJS_BUILD  += $$($1_CU_BUILD_OBJS)
+
+$1_CFLAGS      += $$(CUDA_CFLAGS)
+$1_LDFALGS     += $$(CUDA_LDFALGS)
+$1_CUFALGS     += $$($1_CFLAGS) $$(CUDA_CUFALGS)
+
+$$($1_CU_BUILD_OBJS) : CUDAFLAGS=$$($1_CUFLAGS)
+endif
+
+
+## all objs and deps, and their BUILD_CFLAGS
+$1_OBJS_BUILD   = $$(addprefix $$($1_BUILD_PATH)/,$$($1_OBJS_))
+$1_DEPS         = $$(patsubst %$$(OBJ_EXT),%.d,$$($1_OBJS_BUILD))
+
+$$($1_OBJS_BUILD) : BUILD_CFLAGS=$$($1_CFLAGS)
+$$($1_DEPS)       : BUILD_CFLAGS=$$($1_CFLAGS)
+
+
+## for exe output 
+ifeq "$$($1_MAKE_TYPE)" "bin"
+$1_OUTPUT       = $$($1_BIN_PATH)/$(1)$$(EXE_EXT)
+endif
+
+## for share libary output
+ifeq "$$($1_MAKE_TYPE)" "shared"
+$1_OUTPUT       = $$($1_LIBS_PATH)/$$(LIB_PREFIX)$(1)$$(SLIB_EXT)
+$1_CFLAGS      += $$(SLIB_CFLAGS)
+endif
+
+## for static libary output
+ifeq "$$($1_MAKE_TYPE)" "static"
+$1_OUTPUT       = $$($1_LIBS_PATH)/$$(LIB_PREFIX)$(1)$$(ALIB_EXT)
+endif
+
+
+
+## rules for this target
+ifdef $1_REQUIRES
+$1_requiredPrograms = $$(foreach n,$$($1_REQUIRES),$$(n)_all)
+endif
+
+$1_all : $1_build_dirs $1_sub_dirs $$($1_MOC_CPP) $$($1_QRC_CPP) $$($1_OUTPUT) $$($1_requiredPrograms)
+
+## for exe output 
+ifeq "$$($1_MAKE_TYPE)" "bin"
+
+$$($1_OUTPUT) : $$($1_OBJS_BUILD) $$($1_requiredPrograms)
+	$$(CXX) -o $$@ $$($1_OBJS_BUILD) $$($1_CFLAGS) $$($1_LDFALGS)
+
+endif
+
+## for share libary output
+ifeq "$$($1_MAKE_TYPE)" "shared"
+
+$$($1_OUTPUT) : $$($1_OBJS_BUILD) $$($1_requiredPrograms)
+	$$(CXX) -o $$@ $$($1_OBJS_BUILD) $$($1_CFLAGS) $$($1_LDFALGS)
+
+endif
+
+## for static libary output
+ifeq "$$($1_MAKE_TYPE)" "static"
+
+$$($1_OUTPUT) : $$($1_OBJS_BUILD) $$($1_requiredPrograms)
+	$$(AR) rcs $$$$ $^
+	$$(RANLIB) $$$$
+
+endif
+
+
+## Auto dependencies
+$$($1_BUILD_PATH)/%.d: %.c
+	@mkdir -p $$$$(dirname $$@)   
+	@set -e; rm -f $$@; \
+	$$(CC) -MM  $$< $$(BUILD_CFLAGS) $$(C_FLAGS) > $$@.$$$$$$$$; \
+	sed 's,\($$*\)\.o[ :]*,$$($1_BUILD_PATH)/\1.o $$@ : ,g' < $$@.$$$$$$$$ > $$@; \
+	rm -f $$@.$$$$$$$$
+
+$$($1_BUILD_PATH)/%.d: %.cc
+	@mkdir -p $$$$(dirname $$@)
+	@set -e; rm -f $$@; \
+	$$(CXX) -MM  $$< $$(BUILD_CFLAGS) $$(CXX_FLAGS) > $$@.$$$$$$$$; \
+	sed 's,\($$*\)\.o[ :]*,$$($1_BUILD_PATH)/\1.o $$@ : ,g' < $$@.$$$$$$$$ > $$@; \
+	rm -f $$@.$$$$$$$$
+
+$$($1_BUILD_PATH)/%.d: %.cpp
+	@mkdir -p $$$$(dirname $$@)
+	@set -e; rm -f $$@; \
+	$$(CXX) -MM  $$< $$(BUILD_CFLAGS) $$(CXX_FLAGS) > $$@.$$$$$$$$; \
+	sed 's,\($$*\)\.o[ :]*,$$($1_BUILD_PATH)/\1.o $@ : ,g' < $$@.$$$$$$$$ > $$@; \
+	rm -f $$@.$$$$$$$$
+
+sinclude $$($1_OBJS_BUILD:$$(OBJ_EXT)=.d)
+
+## C++/C rules
+$$($1_BUILD_PATH)/%$$(OBJ_EXT) : %.cc %.h $$($1_BUILD_PATH)/%.d
+	$$(CXX) -o $$@  -c $$< $$(BUILD_CFLAGS) $$(CXX_FLAGS)
+
+$$($1_BUILD_PATH)/%$$(OBJ_EXT) : %.cc $$($1_BUILD_PATH)/%.d
+	$$(CXX) -o $$@  -c $$< $$(BUILD_CFLAGS) $$(CXX_FLAGS)
+
+
+$$($1_BUILD_PATH)/%$$(OBJ_EXT) : %.cpp %.h $$($1_BUILD_PATH)/%.d
+	$$(CXX) -o $$@  -c $$< $$(BUILD_CFLAGS) $$(CXX_FLAGS)
+
+$$($1_BUILD_PATH)/%$$(OBJ_EXT) : %.cpp $$($1_BUILD_PATH)/%.d
+	$$(CXX) -o $$@  -c $$< $$(BUILD_CFLAGS) $$(CXX_FLAGS)
+
+
+$$($1_BUILD_PATH)/%$$(OBJ_EXT) : %.c %.h $$($1_BUILD_PATH)/%.d
+	$$(CC) -o $$@  -c $$< $$(BUILD_CFLAGS) $$(C_FLAGS)
+
+$$($1_BUILD_PATH)/%$$(OBJ_EXT) : %.c $$($1_BUILD_PATH)/%.d
+	$$(CC) -o $$@  -c $$< $$(BUILD_CFLAGS) $$(C_FLAGS)
+
+
+# MOC rules
+$$($1_BUILD_PATH)/%.moc.cpp : %.h
+	$$(MOC) $$< -o $$@ $$($1_MOCFLAGS)
+
+$$($1_BUILD_PATH)/%.moc$$(OBJ_EXT) : $$($1_BUILD_PATH)/%.moc.cpp
+	$$(CXX) -c $$^ -o $$@ $$(BUILD_CFLAGS) $$(CXX_FLAGS)
+
+
+## QT resource rules
+# FIXME: check do not use -name is or not effect qrc 
+#   $(RCC) -name $(basename $<) $< -o $@ 
+$$($1_BUILD_PATH)/%.qrc.cpp : %.qrc
+	$$(RCC) $$< -o $$@ 
+	
+$$($1_BUILD_PATH)/%.qrc$$(OBJ_EXT) : $$($1_BUILD_PATH)/%.qrc.cpp
+	$$(CXX) -c $$^ -o $$@  $$(BUILD_CFLAGS) $$(CXX_FLAGS)
+
+
+## CUDA rules
+$$($1_BUILD_PATH)/%.cuda$$(OBJ_EXT) : %.cu
+	$$(NVCC) $$(CUDAFLAGS) $$^ -o $$@
+
+
+
+## Rules to make target dirs
+.PHONY: $1_build_dirs $1_sub_dirs $1_clean $1_run
+$1_build_dirs :
+	@for dir in $$($1_OBJS_BUILD); do \
+		mkdir -p $$$$(dirname $$$$dir); done
+	@for dir in $$($1_OUTPUT); do \
+		mkdir -p $$$$(dirname $$$$dir); done
+
+$1_sub_dirs :
+	@for dir in $$($1_SUBDIRS); do \
+		$$$$$(MAKE) -C $$$$dir; done
+
+$1_clean :
+	-rm -f $$($1_OUTPUT) \
+		$$($1_OBJS_BUILD) \
+		$$($1_MOC_CPP) $$($1_QRC_CPP) \
+		$$($1_DEPS)
+	@for dir in $$($1_SUBDIRS); do \
+		$$$$(MAKE) clean -C $$$$dir; done
+
+$1_run : $$($1_OUTPUT)
+	@echo ""
+	$$($1_OUTPUT)
+
+
+endef # end of build_one_target
+
+
+################################################################################
+################################################################################
+
+## if user do not set PROGRAMS then automatically collect files
+ifndef PROGRAMS
+PROGRAMS                = $(OUTPUT)
+
+$(OUTPUT)_MAKE_TYPE    ?= $(MAKE_TYPE)
+$(OUTPUT)_MODULES       = $(MODULES)
+
+$(OUTPUT)_SRC           = $(shell find $(SRC_PATH) -name \*.cpp)
+$(OUTPUT)_SRC          += $(shell find $(SRC_PATH) -name \*.cc)
+$(OUTPUT)_SRC          += $(shell find $(SRC_PATH) -name \*.c)
+
+$(OUTPUT)_MOC_FILES     = $(MOC_FILES)
+$(OUTPUT)_QRC_FILES     = $(QRC_FILES)
+
+$(OUTPUT)_CU_FILES      = $(CUDA_FILES)
+
+$(OUTPUT)_INCLUDE_PATH  = $(INCLUDE_PATH)
+$(OUTPUT)_DEFINES       = $(DEFINES)
+$(OUTPUT)_LIB_PATH      = $(LIB_PATH)
+$(OUTPUT)_LIBS          = $(LIBS)
+endif
+
+
+## generate targets
+PROGRAMS_ALL    = $(foreach n,$(PROGRAMS),$(n)_all)
+PROGRAMS_CLEAN  = $(foreach n,$(PROGRAMS),$(n)_clean)
+PROGRAMS_RUN    = $(foreach n,$(PROGRAMS),$(n)_run)
+
+.PHONY: all clean run $(PROGRAMS_ALL) $(PROGRAMS_CLEAN) $(PROGRAMS_RUN)
+all : $(PROGRAMS_ALL)
+
+clean : $(PROGRAMS_CLEAN)
+
+run : $(PROGRAMS_RUN)
+
+
+## build each target
+$(foreach prog,$(PROGRAMS),$(eval $(call build_one_target,$(prog))))
+
+## show expand function
+#$(info $(call build_one_target,bar))
+

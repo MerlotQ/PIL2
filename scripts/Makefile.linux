@@ -37,6 +37,7 @@ OBJEXT      = .o
 EXEEXT     ?= 
 ALIBEXT     = .a
 DLLEXT      = .so
+LIB_PREFIX  ?= lib
 
 ################################################################################
 # Library Settings
@@ -60,7 +61,7 @@ LINKFLAGS       ?= $(SIMP_LDFLAGS)
 ################################################################################
 
 Here_Path       = $(shell pwd)
-HereFolderName  = $(shell pwd |sed 's/^\(.*\)[/]//' )
+HereFolderName  = $(shell pwd | sed 's/^\(.*\)[/]//' )
 
 # default paths can be changed by file 'config.mk'
 sinclude ./config.mk
@@ -75,7 +76,6 @@ OUTPUT      ?= $(HereFolderName)
 MAKE_TYPE   ?= bin #shared static
 
 
-LIB_PREFIX  ?= lib
 
 ifeq "$(MAKE_TYPE)" "bin"
 OUTPUT_NAME ?= $(BIN_PATH)/$(OUTPUT)$(EXEEXT)
@@ -91,6 +91,8 @@ OUTPUT_NAME ?= $(LIBS_PATH)/$(LIB_PREFIX)$(OUTPUT)$(ALIBEXT)
 LINKFLAGS   += 
 endif
 
+
+ifeq "$(AUTO_BUILD)
 
 ################################################################################
 # Source Files Config
@@ -113,7 +115,6 @@ endif
 OBJ_FILES_HERE   = $(patsubst ./%,%,$(OBJ_FILES))
 OBJ_FILES_BUILD  = $(addprefix $(BUILD_PATH)/,$(OBJ_FILES_HERE))
 
-OBJ_FILES_DIRS   =
 
 COMPILEFLAGS    += $(foreach n,$(MODULES),$($(n)_CFLAGS))
 LINKFLAGS       += $(foreach n,$(MODULES),$($(n)_LDFLAGS))
@@ -147,13 +148,13 @@ endif
 # Compile things
 ################################################################################
 ALL : all
-all : output_dirs object_dirs $(MOC_FILES_CPP) $(OUTPUT_NAME)
+all : output_dirs object_dirs sub_dirs $(MOC_FILES_CPP) $(OUTPUT_NAME)
 
 ifeq ("$(MAKE_TYPE)", "static")
 $(OUTPUT_NAME) : $(OBJ_FILES_BUILD)
 	$(AR) rcs $@ $^
 else
-$(OUTPUT_NAME) :$(OBJ_FILES_BUILD)
+$(OUTPUT_NAME) : $(OBJ_FILES_BUILD)
 	$(CXX) -o $@ $^ $(COMPILEFLAGS) $(LINKFLAGS)
 endif
 
@@ -223,7 +224,7 @@ $(BUILD_PATH)/%.cuda.o : %.cu
 
 
 # Rules to make target dirs
-.PHONY:object_dirs output_dirs clean run
+.PHONY:object_dirs output_dirs sub_dirs clean run
 object_dirs:
 	@for dir in $(OBJ_FILES_BUILD); do \
 	mkdir -p $$(dirname $$dir); done
@@ -232,8 +233,14 @@ output_dirs:
 	@for dir in $(OUTPUT_NAME); do \
 	mkdir -p $$(dirname $$dir); done
 
+sub_dirs:
+	@for dir in $(OUTPUT_NAME); do \
+	make -C $$dir; done
+
 clean :
 	rm -f $(OUTPUT_NAME) $(shell find $(BUILD_PATH) -name \*.o) $(shell find $(BUILD_PATH) -name \*.d) $(shell find $(BUILD_PATH) -name \*.moc.cpp)
+	@for dir in $(sub_dirs);do \
+	make clean -C $$dir; done
 
 run :
 	./$(OUTPUT_NAME)

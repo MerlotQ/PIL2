@@ -42,7 +42,7 @@ OBJ_EXT        ?= .o
 EXE_EXT        ?= .exe
 ALIB_EXT       ?= .a
 SLIB_EXT       ?= .dll
-SLIB_CFLAGS    ?= -fPIC -shared
+SLIB_CFLAGS    ?= -shared
 LIB_PREFIX     ?= lib
 
 

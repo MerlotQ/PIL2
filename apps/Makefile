@@ -2,9 +2,9 @@
 #Applications Top Makefile.
 ################################################################################
 subdirs = Tests \
-          ClassLoader_Test \
-          Camera_Test CV_Test GUI_Test Svar_Test \
-          Timer_Test 
+          ClassLoaderTest \
+          CameraTest CVTest GUI_Test SvarTest \
+          TimerTest 
 
 
 all : $(subdirs)

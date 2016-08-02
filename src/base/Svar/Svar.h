@@ -150,7 +150,10 @@ public:
         it=data.find(name);
         if(it==data.end())
         {
-            return def;
+            InsertRet ret=data.insert(std::pair<std::string,Var_Type>(name,def));
+            if(ret.second)
+                return (ret.first->second);
+            else return def;
         }
         else
         {

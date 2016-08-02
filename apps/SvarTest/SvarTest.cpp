@@ -13,7 +13,7 @@ void builtin_test(void* /* ptr */, string /* sCommand */, string sParams)
 {
     if(!svar.exist("ShouldCall"))
     {
-        svar.ParseFile("../apps/Svar_Test/Default.cfg");
+        svar.ParseFile("../apps/SvarTest/Default.cfg");
     }
 
     timer.leave("cmd.Call");

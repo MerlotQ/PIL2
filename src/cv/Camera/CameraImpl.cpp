@@ -1,9 +1,11 @@
 #include "CameraImpl.h"
 #include <fstream>
+#include <sstream>
 //#define __SSE3__
 #ifdef __SSE3__
 #include "pmmintrin.h"
 #endif
+using namespace std;
 
 namespace pi{
 
@@ -209,17 +211,7 @@ int CameraOpenCV::refreshParaments()
         std::cout<<"Camera not valid!Info:"<<info()<<std::endl;
         return -1;}
     if(fx!=0) fx_inv=1./fx;else return -1;
-    if(fy!=0) fx_inv=1./fy;else return -2;
-#ifdef HAS_OPENCV
-    if(!cam_k.data)
-    {
-        cam_k=(cv::Mat_<float>(3, 3)
-               << fx, 0.0, cx,
-               0.0, fy, cy,
-               0.0,0.0, 1.0);
-        cam_d=(cv::Mat_<float>(1, 5) << k1, k2, p1, p2, k3);
-    }
-#endif
+    if(fy!=0) fy_inv=1./fy;else return -2;
     return 0;
 }
 
@@ -248,36 +240,23 @@ Point2d CameraOpenCV::Project(const Point3d& p3d)
 
 Point3d CameraOpenCV::UnProject(const Point2d& p2d)
 {
-#ifdef HAS_OPENCV
-cv::Point2d uv(p2d.x,p2d.y),px;
-const cv::Mat src_pt(1, 1, CV_64FC2, &uv);
-cv::Mat dst_pt(1, 1, CV_64FC2, &px);
-cv::undistortPoints(src_pt, dst_pt, cam_k, cam_d);
-return Point3d(px.x,px.y,1.);
-#else
-Point3d result((p2d.x-cx)*fx_inv,(p2d.y-cy)*fy_inv,1.);
+    double x = (p2d.x - cx)*fx_inv;
+    double y = (p2d.y - cy)*fy_inv;
 
-double r2,r4,r6;
-r2=result.x*result.x+result.y*result.y;
-r4=r2*r2;
-r6=r4*r2;
-double& X=result.x;
-double& Y=result.y;
-
-double a,b0,b,c;
-b0=1+k1*r2+k2*r4+k3*r6;
-a=2.0*p2;
-b=b0+2.0*p1*Y;
-c=p2*r2-X;
-if(a*a>0.0000001) result.x= (sqrt(b*b-4.0*a*c)-b)/(a*2.0);
-
-a=2.0*p1;
-b=b0+2.0*p2*X;
-c=p1*r2-Y;
-if(a*a>0.0000001) result.y= (sqrt(b*b-4.0*a*c)-b)/(a*2.0);
-
-return result;
-#endif
+    // compensate tilt distortion
+    double x0 = x ;
+    double y0 = y ;
+    // compensate distortion iteratively
+    for(int j = 0; j < 5; j++ )
+    {
+        double r2 = x*x + y*y;
+        double icdist = (1)/(1 + ((k3*r2 + k2)*r2 + k1)*r2);
+        double deltaX = 2*p1*x*y + p2*(r2 + 2*x*x);
+        double deltaY = p1*(r2 + 2*y*y) + 2*p2*x*y;
+        x = (x0 - deltaX)*icdist;
+        y = (y0 - deltaY)*icdist;
+    }
+    return pi::Point3d(x,y,1);
 }
 
 CameraOCAM::CameraOCAM(const std::string& filename)

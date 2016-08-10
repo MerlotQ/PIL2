@@ -430,6 +430,8 @@ SOURCES += \
     apps/Tests/MulticastSocketTest.cpp \
     src/gui/gl/MeshInterleaved.cpp \
     src/gui/gl/ply/TinyPly.cpp \
-    apps/Tests/PathTest.cpp
+    apps/Tests/PathTest.cpp \
+    apps/CameraTest/Camera_Test.cpp \
+    apps/Tests/CameraTest.cpp
 
 

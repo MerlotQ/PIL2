@@ -4,15 +4,6 @@
 #include <iostream>
 #include <base/Types/Point.h>
 
-#if 0//USE_SELF_DEFINED
-#define NO_OPENCV
-#else
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#define HAS_OPENCV
-
-#endif
-
 namespace pi
 {
 

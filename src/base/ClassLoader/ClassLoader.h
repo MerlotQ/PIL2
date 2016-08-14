@@ -9,6 +9,7 @@
 #include "../Thread/Mutex.h"
 #include "../Debug/Exception.h"
 #include <map>
+#include <vector>
 #include <sstream>
 
 namespace pi {
@@ -116,6 +117,7 @@ public:
     virtual ~ClassLoader()
         /// Destroys the ClassLoader.
     {
+        unloadLibrary();
         for (typename LibraryMap::const_iterator it = _map.begin(); it != _map.end(); ++it)
         {
             delete it->second.pLibrary;
@@ -191,7 +193,7 @@ public:
         loadLibrary(path, "");
     }
 
-    void unloadLibrary(const std::string& path)
+    void unloadLibrary(const std::string& path="")
         /// Unloads the given library.
         /// Be extremely cautious when unloading shared libraries.
         /// If objects from the library are still referenced somewhere,
@@ -202,6 +204,21 @@ public:
         /// library, the number of calls to unloadLibrary() must be the same
         /// for the library to become unloaded.
     {
+        if(path.empty())
+        {
+            std::vector<std::string> libs2unload;
+            {
+                FastMutex::ScopedLock lock(_mutex);
+
+                for (typename LibraryMap::const_iterator it = _map.begin(); it != _map.end(); ++it)
+                {
+                    libs2unload.push_back(it->second.pLibrary->getPath());
+                }
+            }
+            for(const std::string& libPath:libs2unload) unloadLibrary(libPath);
+        }
+        else
+        {
         FastMutex::ScopedLock lock(_mutex);
 
         typename LibraryMap::iterator it = _map.find(path);
@@ -221,6 +238,7 @@ public:
             }
         }
         else throw NotFoundException(path);
+        }
     }
 
     const Meta* findClass(const std::string& className) const

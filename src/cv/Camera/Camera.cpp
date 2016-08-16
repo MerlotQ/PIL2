@@ -60,6 +60,11 @@ int Camera::height()
     return impl->h;
 }
 
+VecParament<double> Camera::getParameters()
+{
+    return impl->getParameters();
+}
+
 Camera Camera::createFromName(const std::string& name)
 {
     SPtr<CameraImpl> impl_result=SPtr<CameraImpl>(new CameraImpl());;

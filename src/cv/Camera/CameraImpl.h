@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <base/Types/Point.h>
+#include <base/Types/VecParament.h>
 
 namespace pi
 {
@@ -21,6 +22,7 @@ public:
 
     virtual bool isValid(){return false;}
     virtual int refreshParaments(){return -1;}
+    virtual VecParament<double> getParameters(){return VecParament<double>();}
 
     virtual Point2d Project(const Point3d& p3d){return Point2d(-1,-1);}
 
@@ -71,6 +73,8 @@ public:
 
     virtual Point3d UnProject(const Point2d& p2d);
 
+    virtual VecParament<double> getParameters();
+
     double fx,fy,cx,cy,fx_inv,fy_inv;
 };
 
@@ -106,6 +110,8 @@ public:
 
     virtual Point2d Project(const Point3d& p3d);
     virtual Point3d UnProject(const Point2d& p2d);
+
+    virtual VecParament<double> getParameters();
 
     bool& UseDistortion(){return useDistortion;}
 
@@ -149,6 +155,7 @@ public:
 
     virtual Point3d UnProject(const Point2d& p2d);
 
+    virtual VecParament<double> getParameters();
     double fx,fy,cx,cy,fx_inv,fy_inv,
     k1,k2,p1,p2,k3;
 #ifdef HAS_OPENCV
@@ -176,6 +183,7 @@ public:
 
     virtual Point3d UnProject(const Point2d& point);
 
+    virtual VecParament<double> getParameters();
 public:
     double pol[64];    // the polynomial coefficients: pol[0] + x"pol[1] + x^2*pol[2] + ... + x^(N-1)*pol[N-1]
     int length_pol;                // length of polynomial

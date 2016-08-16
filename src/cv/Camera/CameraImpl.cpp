@@ -58,6 +58,13 @@ Point3d CameraPinhole::UnProject(const Point2d& p2d)
     return Point3d((p2d.x-cx)*fx_inv,(p2d.y-cy)*fy_inv,1.);
 }
 
+
+VecParament<double> CameraPinhole::getParameters()
+{
+    VecParament<double> result(std::vector<double>({(double)w,(double)h,fx,fy,cx,cy}));
+    return result;
+}
+
 CameraATAN::CameraATAN():fx(0),fy(0),cx(0),cy(0),d(0),fx_inv(0),fy_inv(0){}
 
 CameraATAN::CameraATAN(int _w,int _h,double _fx,double _fy,double _cx,double _cy,double _d)
@@ -98,6 +105,12 @@ int CameraATAN::refreshParaments()
         useDistortion = false;
     }
     return 0;
+}
+
+VecParament<double> CameraATAN::getParameters()
+{
+    VecParament<double> result(std::vector<double>({(double)w,(double)h,fx,fy,cx,cy,d}));
+    return result;
 }
 
 bool CameraATAN::applyScale(double scale)
@@ -203,6 +216,12 @@ std::string CameraOpenCV::info()
     return sst.str();
 }
 
+VecParament<double> CameraOpenCV::getParameters()
+{
+    VecParament<double> result(std::vector<double>({(double)w,(double)h,fx,fy,cx,cy,k1,k2,p1,p2,k3}));
+    return result;
+}
+
 bool CameraOpenCV::applyScale(double scale){fx*=scale;fy*=scale;cx*=scale;cy*=scale;return true;}
 
 int CameraOpenCV::refreshParaments()
@@ -290,6 +309,15 @@ CameraOCAM::CameraOCAM(const std::string& filename)
         if(!std::getline(ifs,line)) return;
         ifs>>h>>w;
     }
+}
+
+VecParament<double> CameraOCAM::getParameters()
+{
+    VecParament<double> result(std::vector<double>({(double)w,(double)h,cx,cy,c,d,e,(double)length_pol,(double)length_invpol}));
+
+    for(int i=0;i<length_pol;i++) result.data.push_back(pol[i]);
+    for(int i=0;i<length_invpol;i++) result.data.push_back(invpol[i]);
+    return result;
 }
 
 std::string CameraOCAM::info()

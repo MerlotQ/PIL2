@@ -15,6 +15,7 @@ public:
     {
         fromString(str);
     }
+    VecParament(const std::vector<VarType>& vars):data(vars){}
 
     size_t size(){return data.size();}
 

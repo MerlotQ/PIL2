@@ -3,6 +3,7 @@
 
 #include <base/Types/Point.h>
 #include <base/Types/SPtr.h>
+#include <base/Types/VecParament.h>
 
 namespace pi {
 
@@ -31,6 +32,9 @@ public:
     int width();
 
     int height();
+
+    VecParament<double> getParameters();
+
 private:
     SPtr<CameraImpl> impl;
 };

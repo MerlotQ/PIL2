@@ -210,6 +210,13 @@ void Win3D::setPose(SE3f pose)
     camera()->setOrientation(qglviewer::Quaternion(r.w,r.z,-r.y,-r.x));
 }
 
+pi::SE3f Win3D::getPose()
+{
+    qglviewer::Vec t=camera()->position();
+    qglviewer::Quaternion r=camera()->orientation();
+    return pi::SE3f(pi::SO3f(-r[0],-r[1],r[2],r[3]),pi::Point3f(t.x,t.y,t.z));
+}
+
 void Win3D::setCamera(int w,int h,double _fx,double _fy,double _cx,double _cy)
 {
 //    cout<<"SetCamera:"<<w<<h<<fx<<fy,

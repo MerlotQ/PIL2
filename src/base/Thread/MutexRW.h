@@ -59,8 +59,8 @@ public:
         /// Releases the read or write lock.
 
 private:
-    MutexRW(const MutexRW&);
-    MutexRW& operator = (const MutexRW&);
+//    MutexRW(const MutexRW&);
+//    MutexRW& operator = (const MutexRW&);
 };
 
 typedef WriteLock<MutexRW> WriteMutex;

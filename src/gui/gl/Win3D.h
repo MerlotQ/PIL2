@@ -60,6 +60,7 @@ public:
     void Show(){emit show_signal();}
 
     void setPose(pi::SE3f pose);
+    pi::SE3f getPose();
     void setCamera(int w,int h,double fx,double fy,double cx,double cy);
     void loadProjectionMatrix();
     virtual void preDraw();

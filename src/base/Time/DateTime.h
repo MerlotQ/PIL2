@@ -3,7 +3,7 @@
 
 
 #include <iostream>
-
+#include <stdio.h>
 #include "../Environment.h"
 #include "Timestamp.h"
 
@@ -405,7 +405,7 @@ inline void swap(DateTime& d1, DateTime& d2)
 inline std::ostream& operator << (std::ostream &os, const DateTime &dt)
 {
     char date[100];
-    std::sprintf(date,"%04d-%02d-%02d %02d:%02d:%02d.%03d UTC",
+    sprintf(date,"%04d-%02d-%02d %02d:%02d:%02d.%03d UTC",
                  dt.year(), dt.month(), dt.day(),
                  dt.hour(), dt.minute(), dt.second(),
                  dt.millisecond());

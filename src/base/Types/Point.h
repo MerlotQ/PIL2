@@ -18,6 +18,13 @@ struct Point2_
 {
     Point2_():x(0),y(0){}
     Point2_(Precision x_,Precision y_):x(x_),y(y_){}
+
+    template <typename Scalar>
+    operator Point2_<Scalar>()
+    {
+        return Point2_<Scalar>(x,y);
+    }
+
     inline Precision& operator[](int index)const
     {
         return ((Precision*)this)[index];

@@ -117,7 +117,7 @@ public:
 
     virtual GPSData at(size_t idx);
 
-    virtual bool atTime(GPSData& gpsData,const ri64& time=-1,bool nearist=true);
+    virtual bool atTime(GPSData& gpsData,const double& time=-1,bool nearist=true);
 
     virtual bool getArray(std::vector<GPSData>& gpsArray){gpsArray=data;return true;} /// return all data
 

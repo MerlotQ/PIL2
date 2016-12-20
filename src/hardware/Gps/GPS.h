@@ -1,24 +1,27 @@
 #ifndef PIL_GPS_H
 #define PIL_GPS_H
+
+
 #include <vector>
+#include <iomanip>
+
 #include <base/Types/Int.h>
 #include <base/Types/Point.h>
 #include <base/Utils/utils_str.h>
-#include <iomanip>
 
-namespace pi{
+namespace pi {
 
 struct GPSData
 {
-    GPSData(const double& longitude=0,const double& latitude=0,const double& altitude=0,
-            const ri64&   time=-1,const double& hdop=-1,ri32 nsat=0,ri32 fixed=0)
+    GPSData(const double& longitude=0, const double& latitude=0,const double& altitude=0,
+            const double& time=-1, const double& hdop=-1, ri32 nsat=0, ri32 fixed=0)
         :lng(longitude),lat(latitude),alt(altitude),timestamp(time),
           HDOP(hdop),nSat(nsat),fixQuality(fixed){}
 
     double              lng;        ///< longitude, degree
     double              lat;        ///< latitude, degree
     double              alt;        ///< altitude, meters above mean sea level
-    ri64          timestamp;        ///< timestamp at utc
+    double              timestamp;  ///< timestamp at UTC (seconds)
 
     double              HDOP;       ///< Horizontal Dilution of Precision (HDOP),
                                     ///< Relative accuracy of horizontal position
@@ -40,6 +43,12 @@ struct GPSData
     static bool getLngLatfromXY(double dx, double dy,       // input
                                 double &lng2, double &lat2, // output
                                 double lng1=lng0, double lat1=lat0); //ref
+
+    int correct(void)
+    {
+        if( fixQuality ) return 1;
+        else             return 0;
+    }
 
     friend inline std::ostream& operator <<(std::ostream& os,const GPSData& p)
     {
@@ -72,14 +81,22 @@ public:
 
     virtual bool save(const std::string& filename);
 
-    virtual bool atTime(GPSData& gpsData,const ri64& time=-1,bool nearist=true){return false;}
+    virtual GPSData at(size_t idx)
+    {
+        GPSData d;
+        d.fixQuality = 0;
+
+        return d;
+    }
+
+    virtual bool atTime(GPSData& gpsData,const double& time=-1,bool nearist=true){return false;}
 
     virtual bool getArray(std::vector<GPSData>& gpsArray){return false;} /// return all data
 
-    virtual void getTimeRange(ri64& minTime,ri64& maxTime){minTime=-1;maxTime=-1;}
+    virtual void getTimeRange(double& minTime, double& maxTime){minTime=-1;maxTime=-1;}
 
-    inline bool  hasTime(const ri64& time){
-        ri64 minTime,maxTime;
+    inline bool  hasTime(const double& time){
+        double minTime,maxTime;
         getTimeRange(minTime,maxTime);
         return time>=minTime&&time<=maxTime;
     }
@@ -98,15 +115,18 @@ public:
 
     virtual size_t size(){return data.size();}
 
+    virtual GPSData at(size_t idx);
+
     virtual bool atTime(GPSData& gpsData,const ri64& time=-1,bool nearist=true);
 
     virtual bool getArray(std::vector<GPSData>& gpsArray){gpsArray=data;return true;} /// return all data
 
-    virtual void getTimeRange(ri64& minTime,ri64& maxTime);
+    virtual void getTimeRange(double& minTime, double& maxTime);
 
     std::vector<GPSData> data;
 };
 
-
 }// namespace pi
+
 #endif
+

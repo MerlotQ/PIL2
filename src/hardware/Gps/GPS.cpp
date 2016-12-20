@@ -139,7 +139,7 @@ bool GPSArray::insert(const GPSData& gpsData)
     return true;
 }
 
-void GPSArray::getTimeRange(ri64& minTime,ri64& maxTime)
+void GPSArray::getTimeRange(double& minTime, double& maxTime)
 {
     if(!data.size())
     {
@@ -153,7 +153,20 @@ void GPSArray::getTimeRange(ri64& minTime,ri64& maxTime)
     }
 }
 
-bool GPSArray::atTime(GPSData& gpsData,const ri64& time,bool nearist)
+GPSData GPSArray::at(size_t idx)
+{
+    GPSData d;
+
+    if( !data.size() || idx >= data.size() ) {
+        return d;
+    }
+
+    d = data[idx];
+    return d;
+}
+
+
+bool GPSArray::atTime(GPSData& gpsData,const double& time,bool nearist)
 {
     if(!data.size()) return false;
 
@@ -183,18 +196,18 @@ bool GPSArray::atTime(GPSData& gpsData,const ri64& time,bool nearist)
 
     if(nearist)
     {
-        ri64 timeDiffLow =time-data[idxMin].timestamp;
-        ri64 timeDiffHigh=data[idxMax].timestamp-time;
+        double timeDiffLow =time-data[idxMin].timestamp;
+        double timeDiffHigh=data[idxMax].timestamp-time;
         if(timeDiffLow<timeDiffHigh)
         {
-            if(timeDiffLow>1e6) return false;
+            if(timeDiffLow>1.0) return false;
             //less than one second
             gpsData=data[idxMin];
             return true;
         }
         else
         {
-            if(timeDiffHigh>1e6) return false;
+            if(timeDiffHigh>1.0) return false;
             gpsData=data[idxMax];
         }
     }
@@ -202,8 +215,9 @@ bool GPSArray::atTime(GPSData& gpsData,const ri64& time,bool nearist)
     {
         GPSData& low=data[idxMin];
         GPSData& up =data[idxMax];
-        ri64 timeDiffAll=up.timestamp-low.timestamp;
-        if(timeDiffAll>1e6) return false;
+        double timeDiffAll=up.timestamp-low.timestamp;
+        if(timeDiffAll>1.0) return false;
+
         double kLow=((double)(time-low.timestamp))/timeDiffAll;
         double kUp =1.-kLow;
         gpsData=GPSData(low.lat*kLow+up.lat*kUp,low.lng*kLow+up.lng*kUp,

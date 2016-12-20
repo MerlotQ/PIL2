@@ -432,6 +432,7 @@ SOURCES += \
     src/gui/gl/ply/TinyPly.cpp \
     apps/Tests/PathTest.cpp \
     apps/CameraTest/Camera_Test.cpp \
-    apps/Tests/CameraTest.cpp
+    apps/Tests/CameraTest.cpp \
+    src/base/ClassLoader/SharedLibrary_WIN32.cpp
 
 

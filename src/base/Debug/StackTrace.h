@@ -16,4 +16,6 @@ namespace pi {
 
 int dbg_stacktrace_setup(void);
 }
+
+
 #endif // STACKTRACE_H

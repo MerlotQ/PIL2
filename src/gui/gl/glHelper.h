@@ -20,4 +20,5 @@ inline void glColor(const pi::Point3ub& color)
 }
 
 void glMultMatrix(const pi::SE3f& pose);
+
 #endif // GLHELPER_H

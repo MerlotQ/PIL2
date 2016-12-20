@@ -274,6 +274,22 @@ public:
         return os.str();
     }
 
+    std::vector<std::string> names()const
+    {
+        std::vector<std::string> results;
+        FastMutex::ScopedLock lock(_mutex);
+
+        for (typename LibraryMap::const_iterator it = _map.begin(); it != _map.end(); ++it)
+        {
+            const Manif* pManif = it->second.pManifest;
+            for(typename Manif::Iterator itm=pManif->begin();itm!=pManif->end();itm++)
+            {
+                results.push_back(itm.first());
+            }
+        }
+        return results;
+    }
+
     friend std::ostream& operator<<(std::ostream& os,const ClassLoader& rhs)
     {
         os<<rhs.info();

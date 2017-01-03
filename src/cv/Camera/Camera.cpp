@@ -9,7 +9,7 @@ using namespace std;
 
 namespace pi {
 
-Camera::Camera(const std::string& name):impl(new CameraImpl())
+Camera::Camera(const std::string& name) : impl(new CameraImpl())
 {
     if(name.size())
     {
@@ -219,4 +219,87 @@ Camera Camera::createFromName(const std::string& name)
     return Camera();
 }
 
+
+bool Camera::getParameters(double& fx,double& fy,double& cx,double& cy)
+{
+    if( CameraType() == "Ideal" || CameraType() == "PinHole" ||
+        CameraType() == "ATAN" || CameraType() == "OpenCV" )
+    {
+        pi::Point2d cxcy = Project(pi::Point3d(0, 0, 1));
+        pi::Point2d fxfy = Project(pi::Point3d(1, 1, 1)) - cxcy;
+
+        fx = fxfy.x;
+        fy = fxfy.y;
+        cx = cxcy.x;
+        cy = cxcy.y;
+
+        return true;
+    }
+
+    return false;
 }
+
+
+Camera Camera::estimateIdealCamera(void)
+{
+    if( CameraType() == "PinHole" || CameraType() == "Ideal" ) {
+        return *this;
+    }
+
+    int iw, ih;
+    int ix, iy;
+
+    Camera *cam = this;
+
+    iw = cam->width();
+    ih = cam->height();
+
+    double xl_max = -99999, xr_min = 99999, yt_max = -99999, yb_min = 99999;
+
+    ix = 0;
+    for(iy=0; iy<ih; iy++) {
+        Point3d p = cam->UnProject(ix, iy);
+        if( p.x > xl_max ) xl_max = p.x;
+    }
+
+    ix = iw-1;
+    for(iy=0; iy<ih; iy++) {
+        Point3d p = cam->UnProject(ix, iy);
+        if( p.x < xr_min ) xr_min = p.x;
+    }
+
+    iy = 0;
+    for(ix=0; ix<iw; ix++) {
+        Point3d p = cam->UnProject(ix, iy);
+        if( p.y > yt_max ) yt_max = p.y;
+    }
+
+    iy = ih-1;
+    for(ix=0; ix<iw; ix++) {
+        Point3d p = cam->UnProject(ix, iy);
+        if( p.y < yb_min ) yb_min = p.y;
+    }
+
+    double xx, yy;
+    double _fx, _fy, _cx, _cy;
+
+    xx = fabs(xl_max); if( xx > fabs(xr_min) ) xx = fabs(xr_min);
+    yy = fabs(yt_max); if( yy > fabs(yb_min) ) yy = fabs(yb_min);
+
+    _cx = 1.0*iw/2.0;
+    _cy = 1.0*ih/2.0;
+    _fx = 1.0*iw/2.0 / xx;
+    _fy = 1.0*ih/2.0 / yy;
+
+    if( _fx < _fy ) _fx = _fy;
+    else            _fy = _fx;
+
+    CameraPinhole* camera = new CameraPinhole(iw, ih, _fx, _fy, _cx, _cy);
+    SPtr<CameraImpl> impl_result = SPtr<CameraImpl>(camera);
+
+    return Camera(impl_result);
+}
+
+
+}
+

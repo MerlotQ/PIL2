@@ -17,7 +17,7 @@ std::string CameraPinhole::info()
     return sst.str();
 }
 
-bool CameraPinhole::applyScale(double scale){fx*=scale;fy*=scale;cx*=scale;cy*=scale;return true;}
+bool CameraPinhole::applyScale(double scale) { w*=scale; h*=scale; fx*=scale;fy*=scale;cx*=scale;cy*=scale; refreshParaments(); return true; }
 
 bool CameraPinhole::isValid(){return w>0&&h>0&&fx!=0&&fy!=0;}
 
@@ -114,7 +114,7 @@ VecParament<double> CameraATAN::getParameters()
 }
 
 bool CameraATAN::applyScale(double scale)
-{fx*=scale;fy*=scale;cx*=scale;cy*=scale;return true;}
+{ w*=scale; h*=scale; fx*=scale; fy*=scale; cx*=scale; cy*=scale; refreshParaments(); return true;}
 
 Point2d CameraATAN::Project(const Point3d& p3d)
 {
@@ -222,7 +222,7 @@ VecParament<double> CameraOpenCV::getParameters()
     return result;
 }
 
-bool CameraOpenCV::applyScale(double scale){fx*=scale;fy*=scale;cx*=scale;cy*=scale;return true;}
+bool CameraOpenCV::applyScale(double scale){ w*=scale; h*=scale; fx*=scale;fy*=scale;cx*=scale;cy*=scale; refreshParaments(); return true;}
 
 int CameraOpenCV::refreshParaments()
 {

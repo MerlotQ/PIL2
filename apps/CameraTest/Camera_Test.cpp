@@ -146,27 +146,8 @@ bool CameraTest(pi::Camera camera)
     return true;
 }
 
-int main(int argc,char** argv)
+int CameraTest_VIKIT(void)
 {
-    svar.ParseMain(argc,argv);
-    if(!svar.exist("Undis.CameraIn"))
-    {
-        svar.ParseFile("../apps/CameraTest/Default.cfg");
-    }
-
-    int times=svar.GetInt("Times",10000);
-    cout<<"Times="<<times<<endl;
-
-    timer.enter("DoNothing");
-    for(int i=0;i<times;i++)
-        ;
-    timer.leave("DoNothing");
-
-    {
-        pi::Camera camera=pi::Camera::createFromName(svar.GetString("Undis.CameraIn","GoProFISH"));
-        cout<<camera.info()<<endl;
-        CameraTest(camera);
-    }
 #ifdef HAS_VIKIT
     vk::PinholeCamera vk_pinhole(pinhole.Width(),pinhole.Height(),
                                  pinhole.Fx(),pinhole.Fy(),pinhole.Cx(),pinhole.Cy());
@@ -184,14 +165,12 @@ int main(int argc,char** argv)
     VIKITCamera(&vk_cv,cv_cam.CameraType()+"::VK");
 #endif
 
-    pi::Undistorter undis(pi::Camera(svar.GetString("Undis.CameraIn","GoProFISH")),
-                                    pi::Camera(svar.GetString("Undis.CameraOut","GoProIdeaM1080")));
+    return 0;
+}
 
-    if(!undis.valid()) {cout<<"Undis not valid";return -1;}
 
-//    return 0;
-    cv::Mat img=cv::imread(svar.GetString("img_in","img.jpg"));
-
+int undistort_image(cv::Mat img, Undistorter& undis)
+{
     if(!img.empty())
     {
         cv::imshow("img",img);
@@ -223,8 +202,82 @@ int main(int argc,char** argv)
     }
     else
     {
-        cout<<"No such file "<<svar.GetString("img_in","img.jpg");
+        cout<<"No image exist!\n";
     }
 
     return 0;
 }
+
+
+int CameraTest_Undistorter(void)
+{
+    pi::Undistorter undis(pi::Camera(svar.GetString("Undis.CameraIn","GoProFISH")),
+                                    pi::Camera(svar.GetString("Undis.CameraOut","GoProIdeaM1080")));
+    if(!undis.valid()) {cout<<"Undis not valid";return -1;}
+
+    cv::Mat img=cv::imread(svar.GetString("img_in","img.jpg"));
+
+    undistort_image(img, undis);
+
+    return 0;
+}
+
+
+
+int CameraTest_EstimatePinholeCamera(void)
+{
+    pi::Camera camera = pi::Camera::createFromName(svar.GetString("Undis.CameraIn","GoProFISH"));
+    pi::Camera camPinhole = camera.estimateIdealCamera();
+
+    camPinhole.applyScale(0.5);
+
+    cout << "\n\nTesting automatic estimating pinhole camera\n";
+    cout << "Input camera            : " << camera.info() << "\n";
+    cout << "Estimated pinhole camera: " << camPinhole.info() << "\n";
+    cout << "\n";
+
+
+    pi::Undistorter undis(camera, camPinhole);
+    if( !undis.valid() ) { cout<<"Undis not valid";return -1; }
+
+    cv::Mat img=cv::imread(svar.GetString("img_in","img.jpg"));
+
+    undistort_image(img, undis);
+
+    return 0;
+}
+
+int main(int argc,char** argv)
+{
+    svar.ParseMain(argc,argv);
+    if(!svar.exist("Undis.CameraIn"))
+    {
+        svar.ParseFile("../apps/CameraTest/Default.cfg");
+    }
+
+    int times=svar.GetInt("Times",10000);
+    cout<<"Times="<<times<<endl;
+
+    timer.enter("DoNothing");
+    for(int i=0;i<times;i++)
+        ;
+    timer.leave("DoNothing");
+
+    {
+        pi::Camera camera=pi::Camera::createFromName(svar.GetString("Undis.CameraIn","GoProFISH"));
+        cout<<camera.info()<<endl;
+        CameraTest(camera);
+    }
+
+    // test auto estimate pinhole camera
+    CameraTest_EstimatePinholeCamera();
+
+    // test VIKIT
+    CameraTest_VIKIT();
+
+    // test undistorter
+    CameraTest_Undistorter();
+
+    return 0;
+}
+

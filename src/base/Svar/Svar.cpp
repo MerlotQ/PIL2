@@ -757,12 +757,12 @@ std::string Svar::getStatsAsText()
     str=s.getStatsAsText();
     if(str!="")
     ost<<"------------------------------------------------------------------------------\n"<<str;
-    if(data.size()){
+    //if(data.size()){
     ost<<"------------------------------------------------------------------------------\n";
     for(SvarIter it=data.begin();it!=data.end();it++)
         ost<<setw(39)<<setiosflags(ios::left)<<it->first<<"  "
          <<setw(39)<<setiosflags(ios::left)<<it->second<<endl;
-    }
+    //}
     ost<<"=============================== End of Svar report ===========================\n\n";
 
     return ost.str();

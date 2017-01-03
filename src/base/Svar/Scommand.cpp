@@ -84,7 +84,11 @@ void Scommand::UnRegisterCommand(void* thisptr)
 
 bool Scommand::Call(std::string sCommand, std::string sParams)
 {
-    if(!data.exist(sCommand)) return false;
+    if(!data.exist(sCommand)) {
+        //cerr << "Can not find command: " << sCommand << "\n\n";
+        return false;
+    }
+
     CallbackVector& calls=data[sCommand];
     for(CallbackVector::iterator it=calls.begin();it!=calls.end();it++)
         it->cbp(it->thisptr, sCommand, sParams);

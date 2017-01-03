@@ -35,6 +35,7 @@ struct GPSData
     static void    setOrigin(const pi::Point3d& origin);
 
     static GPSData fromXYZ(const pi::Point3d& pt);
+    static pi::Point3d toXYZ(const pi::GPSData& pt);
 
     static bool getXYfromLngLat(double lng2, double lat2,// input
                                 double &dx, double &dy,  // output

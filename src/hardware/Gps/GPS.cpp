@@ -113,6 +113,15 @@ GPSData GPSData::fromXYZ(const pi::Point3d& pt)
     return result;
 }
 
+pi::Point3d GPSData::toXYZ(const pi::GPSData& pt)
+{
+    pi::Point3d xyz;
+    getXYfromLngLat(pt.lng,pt.lat,xyz.x,xyz.y);
+    xyz.z=pt.alt-alt0;
+    return xyz;
+}
+
+
 bool GPS::save(const std::string& filename)
 {
     ofstream ofs(filename.c_str());

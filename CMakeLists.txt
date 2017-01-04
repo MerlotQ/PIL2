@@ -26,6 +26,7 @@ else()
    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
+
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts)
 
 #####################################################################
@@ -76,8 +77,16 @@ endmacro()
 macro(PIL_ECHO_LIBINFO LIBNAME)
 	PIL_CHECK_DEPENDENCY(${LIBNAME})
 	message(--${LIBNAME}:)
-	message("     " ${${LIBNAME}_INCLUDES})
-	message("     " ${${LIBNAME}_LIBRARIES})
+	foreach(IT ${${LIBNAME}_INCLUDES})
+		message("	" ${IT})
+	endforeach()
+
+	foreach(IT ${${LIBNAME}_LIBRARIES})
+		message("	" ${IT})
+	endforeach()
+
+#	message("     " ${${LIBNAME}_INCLUDES})
+#	message("     " ${${LIBNAME}_LIBRARIES})
 endmacro()
 
 macro(PIL_ECHO_LIBSINFO LIBNAMES)	
@@ -106,9 +115,26 @@ add_subdirectory(apps)
 
 get_property(LIBS2COMPILE GLOBAL PROPERTY LIBS2COMPILE)
 get_property(APPS2COMPILE GLOBAL PROPERTY APPS2COMPILE)
- 
+
 message(STATUS "The following targets will to be build:")
-message(STATUS "LIBS(${CMAKE_LIBRARY_OUTPUT_DIRECTORY}): " ${LIBS2COMPILE})
-message(STATUS "APPS(${CMAKE_RUNTIME_OUTPUT_DIRECTORY}): " ${APPS2COMPILE})
+message(STATUS "LIBS(${CMAKE_LIBRARY_OUTPUT_DIRECTORY}): " )
+foreach(IT ${LIBS2COMPILE})
+	message("	" ${IT})
+endforeach()
+
+message(STATUS "APPS(${CMAKE_RUNTIME_OUTPUT_DIRECTORY}): ")
+foreach(IT  ${APPS2COMPILE})
+	message("	" ${IT})
+endforeach()
+
+if(NOT CMAKE_INSTALL_PREFIX)
+set(CMAKE_INSTALL_PREFIX "/usr/local")
+endif()
+
+CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/scripts/FindPIL.cmake.in" "${PROJECT_BINARY_DIR}/FindPIL.cmake" @ONLY)
+
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/ DESTINATION ${CMAKE_INSTALL_PREFIX}/PIL2/include FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/libs/ DESTINATION ${CMAKE_INSTALL_PREFIX}/PIL2/libs)
+install(FILES "${PROJECT_BINARY_DIR}/FindPIL.cmake" DESTINATION ${CMAKE_ROOT}/Modules)
 
 

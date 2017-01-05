@@ -95,6 +95,29 @@ macro(PIL_ECHO_LIBSINFO LIBNAMES)
 	endforeach()
 endmacro()
 
+macro(PIL_FIND_VERSION)
+  file(READ "${PROJECT_SOURCE_DIR}/src/base/PIL_VERSION.h" _pil_version_header)
+
+  string(REGEX MATCH "define[ \t]+PIL_VERSION_MAJOR[ \t]+([0-9]+)" _pil_major_version_match "${_pil_version_header}")
+  set(PIL_VERSION_MAJOR "${CMAKE_MATCH_1}")
+  string(REGEX MATCH "define[ \t]+PIL_VERSION_MINOR[ \t]+([0-9]+)" _pil_minor_version_match "${_pil_version_header}")
+  set(PIL_VERSION_MINOR "${CMAKE_MATCH_1}")
+  string(REGEX MATCH "define[ \t]+PIL_VERSION_PATCH[ \t]+([0-9]+)" _pil_patch_version_match "${_pil_version_header}")
+  set(PIL_VERSION_PATCH "${CMAKE_MATCH_1}")
+	
+  if(NOT PIL_VERSION_MAJOR)
+    set(PIL_VERSION_MAJOR 1)
+  endif(NOT PIL_VERSION_MAJOR)
+  if(NOT PIL_VERSION_MINOR)
+    set(PIL_VERSION_MINOR 1)
+  endif(NOT PIL_VERSION_MINOR)
+  if(NOT PIL_VERSION_PATCH)
+    set(PIL_VERSION_PATCH 0)
+  endif(NOT PIL_VERSION_PATCH)
+	
+
+  set(PIL_VERSION ${PIL_VERSION_MAJOR}.${PIL_VERSION_MINOR}.${PIL_VERSION_PATCH})
+endmacro()
 
 message("----------------------------------------------------------")
 PIL_ECHO_LIBINFO(OPENCV)
@@ -131,10 +154,12 @@ if(NOT CMAKE_INSTALL_PREFIX)
 set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif()
 
+PIL_FIND_VERSION()
+set(CMAKE_INSTALL_PIL_ROOT "${CMAKE_INSTALL_PREFIX}/PIL-${PIL_VERSION}")
 CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/scripts/FindPIL.cmake.in" "${PROJECT_BINARY_DIR}/FindPIL.cmake" @ONLY)
 
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/ DESTINATION ${CMAKE_INSTALL_PREFIX}/PIL2/include FILES_MATCHING PATTERN "*.h")
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/libs/ DESTINATION ${CMAKE_INSTALL_PREFIX}/PIL2/libs)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/ DESTINATION ${CMAKE_INSTALL_PIL_ROOT}/pil FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/libs/ DESTINATION ${CMAKE_INSTALL_PIL_ROOT}/lib)
 install(FILES "${PROJECT_BINARY_DIR}/FindPIL.cmake" DESTINATION ${CMAKE_ROOT}/Modules)
 
 

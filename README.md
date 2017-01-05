@@ -46,7 +46,7 @@ The [PIL](http://zhaoyong.adv-ci.com/pil/) library includes some pretty useful t
   * Download the latest code with: 
     * Git: 
     
-            git clone https://github.com/zdzhaoyong/PIL
+            git clone https://github.com/zdzhaoyong/PIL2
 
 ###2.2. Dependency
 **OpenCV** : sudo apt-get install libopencv-dev 
@@ -58,11 +58,14 @@ The [PIL](http://zhaoyong.adv-ci.com/pil/) library includes some pretty useful t
 **Boost** : sudo apt-get install libboost1.48-all-dev
 
 ###2.2. Compilation
-As we develop the whole project on Linux, only compilation *Makefile* for linux is provided. If you are using linux systems, it can be compiled with one command:
-
-    cd PIL;make
-
-The compilation should be ok in most circumstances and once not, you may need to modified the file *scripts/LIBS_CONFIG.linux* and config the library dependences manually.
+As we develop the whole project on Linux, only compilation *Makefile* for linux is provided. If you are using linux systems, it can be compiled with cmake:
+```
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
 ##3. Usage and examples
 Lots of examples are provided in folder apps, cd to the app folder you wanna and input *make run* to excute the application.
 

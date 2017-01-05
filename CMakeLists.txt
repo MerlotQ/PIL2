@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.6)
 project(PIL)
 
 IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE Debug)#Release
+  SET(CMAKE_BUILD_TYPE Release)#Release
 ENDIF()
 
 MESSAGE("Build type: " ${CMAKE_BUILD_TYPE})
@@ -25,76 +25,30 @@ elseif(COMPILER_SUPPORTS_CXX0X)
 else()
    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
+#####################################################################
+message("----------------------------------------------------------")
+set(MODULES SYSTEM OpenCV OpenGL Qt QGLViewer)
 
 
-LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts)
+set(TARGET_NAME NO_TARGET)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts/PICMake)
+include(PICMake)
+
+# Now do build things
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-rpath,.:./libs:../libs")
+
+# Build libs
+
+include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
+add_subdirectory(src)
+add_subdirectory(apps)
+message("----------------------------------------------------------")
+reportTargets()
 
 #####################################################################
-# Find dependencies
-
-#**Qt** : sudo apt-get install build-essential g++ libqt4-core libqt4-dev libqt4-gui qt4-doc qt4-designer 
-#**QGLViewer** : sudo apt-get install libqglviewer-dev libqglviewer2
-
-find_package(OpenCV 2.4.9 REQUIRED)
-find_package(Eigen3 3.1.0 REQUIRED)
-find_package(QGLViewer    REQUIRED)
-
-#**Qt** : sudo apt-get install build-essential g++ libqt4-core libqt4-dev libqt4-gui qt4-doc qt4-designer 
-#**QGLViewer** : sudo apt-get install libqglviewer-dev libqglviewer2
-find_package(Qt4 COMPONENTS QTCORE QTGUI)
-include(${QT_USE_FILE})
-add_definitions(${QT_DEFINITIONS})
-include_directories(${QT_INCLUDE_DIR})
-set(QT_LIBRARIES QtGui QtCore QtXml QtOpenGL GL GLU glut GLEW)
-
-
-set(PI_BASE_INCLUDES ${CMAKE_SOURCE_DIR}/src)
-set(PI_BASE_LIBRARIES pi_base)
-set(PI_GUI_LIBRARIES pi_gui)
-set(PI_CV_LIBRARIES pi_cv)
-set(PI_NETWORK_LIBRARIES pi_network)
-set(PI_HARDWARE_LIBRARIES pi_hardware)
-
-
-#####################################################################
-# Results collection
-macro(PIL_CHECK_DEPENDENCY LIBNAME)
-	if(NOT ${LIBNAME}_INCLUDES)
-		if(${LIBNAME}_INCLUDE_DIR)
-			set(${LIBNAME}_INCLUDES ${${LIBNAME}_INCLUDE_DIR})
-		endif(${LIBNAME}_INCLUDE_DIR)
-	endif(NOT ${LIBNAME}_INCLUDES)
-
-	if(NOT ${LIBNAME}_LIBRARIES)
-		if(${LIBNAME}_LIBRARY)
-			set(${LIBNAME}_LIBRARIES ${${LIBNAME}_LIBRARY})
-		elseif(${LIBNAME}_LIBS)
-			set(${LIBNAME}_LIBRARIES ${${LIBNAME}_LIBS})
-		endif()
-	endif(NOT ${LIBNAME}_LIBRARIES)
-endmacro()
-
-macro(PIL_ECHO_LIBINFO LIBNAME)
-	PIL_CHECK_DEPENDENCY(${LIBNAME})
-	message(--${LIBNAME}:)
-	foreach(IT ${${LIBNAME}_INCLUDES})
-		message("	" ${IT})
-	endforeach()
-
-	foreach(IT ${${LIBNAME}_LIBRARIES})
-		message("	" ${IT})
-	endforeach()
-
-#	message("     " ${${LIBNAME}_INCLUDES})
-#	message("     " ${${LIBNAME}_LIBRARIES})
-endmacro()
-
-macro(PIL_ECHO_LIBSINFO LIBNAMES)	
-		message("LIBNAME: " ${LIBNAME})
-		PIL_ECHO_LIBINFO(${LIBNAME})
-	endforeach()
-endmacro()
-
+message("----------------------------------------------------------")
 macro(PIL_FIND_VERSION)
   file(READ "${PROJECT_SOURCE_DIR}/src/base/PIL_VERSION.h" _pil_version_header)
 
@@ -118,37 +72,6 @@ macro(PIL_FIND_VERSION)
 
   set(PIL_VERSION ${PIL_VERSION_MAJOR}.${PIL_VERSION_MINOR}.${PIL_VERSION_PATCH})
 endmacro()
-
-message("----------------------------------------------------------")
-PIL_ECHO_LIBINFO(OPENCV)
-PIL_ECHO_LIBINFO(QT)
-PIL_ECHO_LIBINFO(QGLVIEWER)
-
-message("----------------------------------------------------------")
-#####################################################################
-# Now do build things
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-rpath,.:./libs:../libs")
-# Build libs
-add_subdirectory(src)
-
-# Build apps
-add_subdirectory(apps)
-
-get_property(LIBS2COMPILE GLOBAL PROPERTY LIBS2COMPILE)
-get_property(APPS2COMPILE GLOBAL PROPERTY APPS2COMPILE)
-
-message(STATUS "The following targets will to be build:")
-message(STATUS "LIBS(${CMAKE_LIBRARY_OUTPUT_DIRECTORY}): " )
-foreach(IT ${LIBS2COMPILE})
-	message("	" ${IT})
-endforeach()
-
-message(STATUS "APPS(${CMAKE_RUNTIME_OUTPUT_DIRECTORY}): ")
-foreach(IT  ${APPS2COMPILE})
-	message("	" ${IT})
-endforeach()
 
 if(NOT CMAKE_INSTALL_PREFIX)
 set(CMAKE_INSTALL_PREFIX "/usr/local")

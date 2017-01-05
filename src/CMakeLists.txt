@@ -1,5 +1,10 @@
-set(LIB_MODULES base network hardware gui cv)
+file(GLOB APPS2BUILD "*")
 
-foreach(LIB_NAME ${LIB_MODULES})
-add_subdirectory(${LIB_NAME})
+set(MAKE_TYPE "shared")
+set(CMAKE_SHARED_LIBRARY_PREFIX libpi_)
+
+foreach(APPNAME ${APPS2BUILD})
+	if(IS_DIRECTORY ${APPNAME} AND EXISTS ${APPNAME}/CMakeLists.txt)
+		add_subdirectory(${APPNAME})
+	endif()
 endforeach()

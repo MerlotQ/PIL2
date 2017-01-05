@@ -141,6 +141,7 @@ public:
                               sin_half_theta*r.y,
                               sin_half_theta*r.z,W);
     }
+    inline Precision SIGN(const Precision& v){return v>0?1.:-1.;}
 
     /// This is an unsafe operation.
     /// Please make sure that your pointer is both valid and has an appropriate size
@@ -214,7 +215,7 @@ public:
                 printf("coding error\n");
                 return false;
             }
-            Precision r = NORM(q0, q1, q2, q3);
+            Precision r = sqrt(q0*q0+q1*q1+q2*q2+q3*q3);
             q0 /= r;
             q1 /= r;
             q2 /= r;

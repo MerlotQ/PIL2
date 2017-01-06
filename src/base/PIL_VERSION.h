@@ -1,1 +1,6 @@
 #define PIL_VERSION 0x01010000      //1.1.0
+
+#define PIL_VERSION_MAJOR 1
+#define PIL_VERSION_MINOR 1
+#define PIL_VERSION_PATCH 0
+

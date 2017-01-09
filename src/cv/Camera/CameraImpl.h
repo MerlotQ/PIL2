@@ -158,9 +158,6 @@ public:
     virtual VecParament<double> getParameters();
     double fx,fy,cx,cy,fx_inv,fy_inv,
     k1,k2,p1,p2,k3;
-#ifdef HAS_OPENCV
-    cv::Mat cam_k,cam_d;
-#endif
 };
 
 

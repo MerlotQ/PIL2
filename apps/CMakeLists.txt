@@ -1,9 +1,8 @@
-set(APPS2BUILD Camera_Test ClassLoader_Test CV_Test GUI_Test Svar_Test Timer_Test Tests)
-
 file(GLOB APPS2BUILD "*")
 
+set(MAKE_TYPE "bin")
 foreach(APPNAME ${APPS2BUILD})
-	if(IS_DIRECTORY ${APPNAME})
+	if(IS_DIRECTORY ${APPNAME} AND EXISTS ${APPNAME}/CMakeLists.txt)
 		add_subdirectory(${APPNAME})
 	endif()
 endforeach()

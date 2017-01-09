@@ -1,4 +1,3 @@
-set(CMAKE_BASE_FROM_DIR ${CMAKE_CURRENT_LIST_DIR})
-set(MODULES QT QGLVIEWER PI_BASE PI_GUI)
+set(MODULES QT QGLVIEWER OPENGL base gui)
 
-include(${CMAKE_CURRENT_LIST_DIR}/../../scripts/CMakeListBase.cmake)
+include(PICMake)

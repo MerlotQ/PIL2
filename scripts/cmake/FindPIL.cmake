@@ -39,8 +39,6 @@ macro(pil_check_version)
   set(PIL_VERSION_PATCH "${CMAKE_MATCH_1}")
 
   set(PIL_VERSION ${PIL_VERSION_MAJOR}.${PIL_VERSION_MINOR}.${PIL_VERSION_PATCH})
-
-
   if(${PIL_VERSION} VERSION_LESS ${PIL_FIND_VERSION})
     set(PIL_VERSION_OK FALSE)
   else(${PIL_VERSION} VERSION_LESS ${PIL_FIND_VERSION})
@@ -57,10 +55,11 @@ macro(pil_check_version)
 endmacro(pil_check_version)
 
 
-FIND_PATH( PIL_INCLUDE_DIR base/PIL_VERSION.h
+FIND_PATH( PIL_INCLUDE_DIR base/PIL_VERSION.h base/PIL_VERSION.h
 	# installation selected by user
 	$ENV{PIL_PATH}/src
 	$ENV{PIL_HOME}/src
+	/data/zhaoyong/Program/Apps/PIL/src
 	# system placed in /usr/local/include
 	@CMAKE_INSTALL_PIL_ROOT@/pil
 	@CMAKE_INSTALL_PIL_ROOT@/src

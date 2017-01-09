@@ -27,25 +27,47 @@ else()
 endif()
 #####################################################################
 message("----------------------------------------------------------")
-set(MODULES SYSTEM OpenCV OpenGL Qt QGLViewer)
-
-
-set(TARGET_NAME NO_TARGET)
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts/PICMake)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/scripts/cmake")
 include(PICMake)
+
+pi_collect_packages(COLLECTED_PACKAGES VERBOSE MODULES OpenCV OpenGL GLEW GLUT Qt QGLViewer REQUIRED System)
+
+set(MODULES SYSTEM  OpenGL Qt QGLViewer)
+
 
 # Now do build things
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-rpath,.:./libs:../libs")
 
-# Build libs
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
-add_subdirectory(src)
-add_subdirectory(apps)
+
+# Build libs
+set(LIB_TYPE "shared")
+#add_subdirectory(src)
+pi_add_target(pi_base ${LIB_TYPE} src/base REQUIRED SYSTEM)
+pi_add_target(pi_hardware ${LIB_TYPE} src/hardware DEPENDENCY pi_base)
+pi_add_target(pi_network ${LIB_TYPE} src/network REQUIRED System DEPENDENCY pi_base)
+pi_add_target(pi_cv ${LIB_TYPE} src/cv REQUIRED OPENCV DEPENDENCY pi_base)
+pi_add_target(pi_gui ${LIB_TYPE} src/gui REQUIRED Qt OpenGL GLEW GLUT QGLViewer DEPENDENCY pi_base)
+
+
+pi_add_target(TestLibrary SHARED apps/ClassLoaderTest/TestLibrary.cpp REQUIRED pi_base)
+
+# Build apps
+#add_subdirectory(apps)
+pi_add_target(Tests BIN apps/Tests REQUIRED pi_base pi_network MODULES pi_cv pi_gui pi_hardware)
+
+pi_add_target(SvarTest BIN apps/SvarTest DEPENDENCY pi_base)
+pi_add_target(TimerTest BIN apps/TimerTest DEPENDENCY pi_base)
+pi_add_target(ClassLoaderTest BIN apps/ClassLoaderTest/TestPlugin.cpp DEPENDENCY pi_base)
+
+pi_add_target(CameraTest BIN apps/CameraTest DEPENDENCY pi_base pi_cv)
+
+pi_add_target(GUI_Test BIN apps/GUI_Test REQUIRED QT QGLVIEWER OPENGL GLEW GLUT DEPENDENCY pi_base pi_gui)
 message("----------------------------------------------------------")
-reportTargets()
+pi_report_target()
 
 #####################################################################
 message("----------------------------------------------------------")

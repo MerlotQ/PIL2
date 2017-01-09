@@ -163,6 +163,7 @@ ELSE(WIN32) # Linux
 				SET(PIL_FOUND 0)
 				message(FATAL_ERROR "The following PIL modules are required but not found: ${PIL_NOTFOUND_COMPONENTS}")
 			else(PIL_NOTFOUND_COMPONENTS)
+				SET ( PIL_DEFINITIONS -std=c++11)
 				SET ( PIL_FOUND 1 )
 			endif(PIL_NOTFOUND_COMPONENTS)
 		else(PIL_LIBRARIES)

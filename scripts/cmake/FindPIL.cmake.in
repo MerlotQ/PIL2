@@ -47,7 +47,7 @@ macro(pil_check_version)
     set(PIL_VERSION_OK TRUE)
   endif(${PIL_VERSION} VERSION_LESS ${PIL_FIND_VERSION})
 
-	get_filename_component(PIL_PATH "${PIL_INCLUDE_DIR}/../" ABSOLUTE)
+	get_filename_component(PIL_PATH "${PIL_INCLUDE_DIR}/../../" ABSOLUTE)
   
   if(NOT PIL_VERSION_OK)
 
@@ -62,14 +62,12 @@ FIND_PATH( PIL_INCLUDE_DIR base/PIL_VERSION.h
 	$ENV{PIL_PATH}/src
 	$ENV{PIL_HOME}/src
 	# system placed in /usr/local/include
-	@CMAKE_INSTALL_PIL_ROOT@/pil
-	@CMAKE_INSTALL_PIL_ROOT@/src
-	@CMAKE_INSTALL_PIL_ROOT@/include
+	@CMAKE_INSTALL_PREFIX@/include/pil
 )
 
 if(PIL_INCLUDE_DIR)
 	pil_check_version()
-	set(PIL_INCLUDES ${PIL_PATH} ${PIL_INCLUDE_DIR})
+	set(PIL_INCLUDES ${PIL_PATH}/include ${PIL_INCLUDE_DIR})
 endif(PIL_INCLUDE_DIR)
 
 

@@ -11,8 +11,8 @@ class DNSTest : public TestCase
     DNSTest():TestCase("DNSTest"){}
     virtual void run()
     {
-        testHostByName();
         testHostByAddress();
+        testHostByName();
     }
     void testHostByName();
     void testHostByAddress();

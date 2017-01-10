@@ -98,7 +98,7 @@ pi_report_target(LIBS2COMPILE APPS2COMPILE)
 #####################################################################
 message("----------------------------------------------------------")
 
-pi_install(HEADERS src HEADER_DESTINATION include/pil 
-           TARGETS pi_base pi_hardware pi_network pi_network pi_cv pi_gui
+pi_install(HEADERS src/base src/hardware src/network src/cv src/gui HEADER_DESTINATION include/pil
+           TARGETS pi_base pi_hardware pi_network pi_cv pi_gui
            CMAKE "${PROJECT_SOURCE_DIR}/scripts/cmake/FindPIL.cmake.in")
 

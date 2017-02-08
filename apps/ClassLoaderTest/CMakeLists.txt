@@ -8,5 +8,5 @@ set_property( GLOBAL APPEND PROPERTY LIBS2COMPILE  " ${CMAKE_SHARED_LIBRARY_PREF
 set_property( GLOBAL APPEND PROPERTY APPS2COMPILE  " ${TARGET_NAME}")
 
 add_executable(ClassLoaderTest TestPlugin.cpp)
-target_link_libraries(ClassLoaderTest pi_base)
+target_link_libraries(ClassLoaderTest base)
 

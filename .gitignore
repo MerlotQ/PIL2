@@ -1,5 +1,7 @@
 *~
 *.o
+.idea
+cmake-build*
 build
 build-*
 libs

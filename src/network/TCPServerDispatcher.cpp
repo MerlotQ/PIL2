@@ -88,7 +88,7 @@ void TCPServerDispatcher::run()
             TCPConnectionNotification* pCNf = dynamic_cast<TCPConnectionNotification*>(pNf.get());
             if (pCNf)
             {
-                std::auto_ptr<TCPServerConnection> pConnection(_pConnectionFactory->createConnection(pCNf->socket()));
+                SPtr<TCPServerConnection> pConnection(_pConnectionFactory->createConnection(pCNf->socket()));
                 pi_check_ptr(pConnection.get());
                 beginConnection();
                 pConnection->start();

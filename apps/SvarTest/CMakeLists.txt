@@ -1,4 +1,3 @@
-set(CMAKE_BASE_FROM_DIR ${CMAKE_CURRENT_LIST_DIR})
-set(MODULES PI_BASE)
+set(MODULES base)
 
-include(${CMAKE_CURRENT_LIST_DIR}/../../scripts/CMakeListBase.cmake)
+include(PICMake)

@@ -9,4 +9,4 @@ PIL.pro
 PIL.pro.user
 PIL.pro.user.*
 *.pro.user*
-
+*.user*

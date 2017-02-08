@@ -189,7 +189,7 @@ bool PathImpl::lsdir(const std::string& path,std::vector<std::string>& dl)
     // open directory
     dir = opendir(path.c_str());
     if( dir == NULL ) {
-        pi_dbg_error("Failed to open dir: %s\n", dir_name.c_str());
+        pi_dbg_error("Failed to open dir: %s\n", path.c_str());
         return false;
     }
 

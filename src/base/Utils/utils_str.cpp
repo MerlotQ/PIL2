@@ -8,6 +8,7 @@
 
 #include "utils_str.h"
 #include "base/Environment.h"
+#include "base/Debug/Assert.h"
 
 using namespace std;
 
@@ -127,6 +128,10 @@ std::string join_text(const StringArray& sa, const std::string& delims)
     return s;
 }
 
+std::string join_text(const std::string& s1, const std::string& s2)
+{
+    return s1+s2;
+}
 
 ///
 /// \brief split_line
@@ -182,6 +187,52 @@ StringArray split_line(const std::string &intext)
     delete [] buf;
 
     return r;
+}
+
+
+int read_lines(const std::string& fn, StringArray &lns, int buf_len)
+{
+    FILE    *fp=NULL;
+
+    char    *buf;
+    string  s;
+
+    // clear old data
+    lns.clear();
+
+    // alloc buffer
+    buf = new char[buf_len];
+
+    // open file
+    fp = fopen(fn.c_str(), "r");
+    if( fp == NULL ) {
+        pi_dbg_error("can not open file: %s", fn.c_str());
+        return -1;
+    }
+
+    while( !feof(fp) ) {
+        // read a line
+        if( NULL == fgets(buf, buf_len, fp) )
+            break;
+
+        // remove blank & CR
+        s = trim(buf);
+
+        // skip blank line
+        if( s.size() < 1 )
+            continue;
+
+        // add to list
+        lns.push_back(s);
+    }
+
+    // close file
+    fclose(fp);
+
+    // free array
+    delete [] buf;
+
+    return 0;
 }
 
 // string trim functions

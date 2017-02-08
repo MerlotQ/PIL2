@@ -54,6 +54,17 @@ StringArray split_text(const std::string& intext, const std::string &delims);
 std::string join_text(const StringArray& sa, const std::string& delims);
 
 ///
+/// \brief merge two string together
+///
+/// \param s1           - string 1
+/// \param s2           - string 2
+///
+/// \return
+///     merged string
+///
+std::string join_text(const std::string& s1, const std::string& s2);
+
+///
 /// \brief split_line
 ///     split given string by line
 ///
@@ -63,6 +74,20 @@ std::string join_text(const StringArray& sa, const std::string& delims);
 /// FIXME: blank line is not supported!
 ///
 StringArray split_line(const std::string &intext);
+
+
+///
+/// \brief read_lines from file
+///
+/// \param fn           - file name
+/// \param lns          - lines
+/// \param buf_len      - default line buffer size
+///
+/// \return
+///         0           - success
+///
+int read_lines(const std::string& fn, StringArray &lns, int buf_len=8196);
+
 
 // string trim functions
 std::string ltrim(const std::string &s);

@@ -273,7 +273,7 @@ ThreadPool::~ThreadPool()
     }
     catch (...)
     {
-        pi_unexpected();
+        pi_dbg_error("Failed!");
     }
 }
 

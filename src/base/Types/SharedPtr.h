@@ -132,7 +132,7 @@ public:
         }
         catch (...)
         {
-            pi_unexpected();
+            pi_dbg_error("Failed to release SharedPtr!");
         }
     }
 

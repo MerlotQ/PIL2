@@ -57,7 +57,7 @@ TCPServer::~TCPServer()
     }
     catch (...)
     {
-        pi_unexpected();
+        pi_dbg_error("Failed");
     }
 }
 

@@ -75,7 +75,7 @@ inline void RefCountedObject::release() const throw()
     }
     catch (...)
     {
-        pi_unexpected();
+        pi_dbg_error("Failed to release!");
     }
 }
 

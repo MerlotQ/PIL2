@@ -17,6 +17,10 @@ public:
     }
     VecParament(const std::vector<VarType>& vars):data(vars){}
 
+    VecParament(int n, const VarType& defV) : data(n, defV)
+    {
+    }
+
     size_t size(){return data.size();}
 
     VarType& operator [](size_t idx){return data[idx];}

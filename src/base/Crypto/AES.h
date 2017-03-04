@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include <string>
 #include <vector>
 
 
@@ -39,6 +40,7 @@ typedef size_t                  AES_CONTEX;
 typedef std::vector<uint8_t>    AES_KEY;
 
 AES_CONTEX AES_setKey(AES_KEY& key);
+AES_CONTEX AES_setKey(const std::string& key);
 int AES_freeKey(AES_CONTEX ctx);
 
 int AES_encodeMsg(AES_CONTEX ctx, const std::vector<uint8_t>& msgIn, std::vector<uint8_t>& msgOut);
@@ -61,6 +63,12 @@ public:
         m_key = AES_setKey(key);
 
         return 0;
+    }
+
+    int setKey(const std::string& key) {
+        if( m_key ) AES_freeKey(m_key);
+
+        m_key = AES_setKey(key);
     }
 
     int isKeySet(void) {

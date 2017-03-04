@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "AES.h"
+#include "Crypto_utils.h"
 
 
 namespace pi {
@@ -549,6 +550,12 @@ AES_CONTEX AES_setKey(AES_KEY& key)
     _ctx->key_expansion((uint8_t*) key.data());
 
     return (AES_CONTEX) _ctx;
+}
+
+AES_CONTEX AES_setKey(const std::string& key_)
+{
+    AES_KEY key = pi::crypto::str2vec(key_);
+    return AES_setKey(key);
 }
 
 int AES_freeKey(AES_CONTEX ctx)

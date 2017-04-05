@@ -1,20 +1,3 @@
-//
-// NamedEvent_UNIX.h
-//
-// $Id: //poco/1.4/Foundation/include/Poco/NamedEvent_UNIX.h#1 $
-//
-// Library: Foundation
-// Package: Processes
-// Module:  NamedEvent
-//
-// Definition of the NamedEventImpl class for Unix.
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
-
 
 #ifndef Foundation_NamedEvent_UNIX_INCLUDED
 #define Foundation_NamedEvent_UNIX_INCLUDED

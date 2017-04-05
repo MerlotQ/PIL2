@@ -1,20 +1,3 @@
-//
-// PipeImpl_DUMMY.h
-//
-// $Id: //poco/1.4/Foundation/include/Poco/PipeImpl_DUMMY.h#1 $
-//
-// Library: Foundation
-// Package: Processes
-// Module:  PipeImpl
-//
-// Definition of the PipeImpl_DUMMY class.
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
-
 
 #ifndef Foundation_PipeImpl_DUMMY_INCLUDED
 #define Foundation_PipeImpl_DUMMY_INCLUDED
@@ -48,4 +31,4 @@ public:
 } // namespace pi
 
 
-#endif // Foundation_PipeImpl_DUMMY_INCLUDED
+#endif 

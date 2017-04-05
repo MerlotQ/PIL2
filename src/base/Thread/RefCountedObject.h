@@ -1,21 +1,3 @@
-//
-// RefCountedObject.h
-//
-// $Id: //poco/1.4/Foundation/include/Poco/RefCountedObject.h#1 $
-//
-// Library: Foundation
-// Package: Core
-// Module:  RefCountedObject
-//
-// Definition of the RefCountedObject class.
-//
-// Copyright (c) 2004-2009, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
-
-
 #ifndef Foundation_RefCountedObject_INCLUDED
 #define Foundation_RefCountedObject_INCLUDED
 

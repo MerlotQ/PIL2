@@ -1,20 +1,3 @@
-//
-// Pipe.h
-//
-// $Id: //poco/1.4/Foundation/include/Poco/Pipe.h#1 $
-//
-// Library: Foundation
-// Package: Processes
-// Module:  Pipe
-//
-// Definition of the Pipe class.
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
-
 
 #ifndef Foundation_Pipe_INCLUDED
 #define Foundation_Pipe_INCLUDED
@@ -142,6 +125,6 @@ inline Pipe::Handle Pipe::writeHandle() const
 } // namespace pi
 
 
-#endif // Foundation_Pipe_INCLUDED
+#endif
 
 

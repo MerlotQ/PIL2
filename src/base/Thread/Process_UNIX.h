@@ -1,23 +1,6 @@
-//
-// Process_UNIX.h
-//
-// $Id: //poco/1.4/Foundation/include/Poco/Process_UNIX.h#3 $
-//
-// Library: Foundation
-// Package: Processes
-// Module:  Process
-//
-// Definition of the ProcessImpl class for Unix.
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
 
-
-#ifndef Foundation_Process_UNIX_INCLUDED
-#define Foundation_Process_UNIX_INCLUDED
+#ifndef PIL_Process_UNIX_INCLUDED
+#define PIL_Process_UNIX_INCLUDED
 
 #include <unistd.h>
 #include <vector>
@@ -85,4 +68,4 @@ private:
 } // namespace pi
 
 
-#endif // Foundation_Process_UNIX_INCLUDED
+#endif // PIL_Process_UNIX_INCLUDED

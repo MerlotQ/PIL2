@@ -1,23 +1,6 @@
-//
-// Process.h
-//
-// $Id: //poco/1.4/Foundation/include/Poco/Process.h#4 $
-//
-// Library: Foundation
-// Package: Processes
-// Module:  Process
-//
-// Definition of the Process class.
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
 
-
-#ifndef Foundation_Process_INCLUDED
-#define Foundation_Process_INCLUDED
+#ifndef PIL_Process_INCLUDED
+#define PIL_Process_INCLUDED
 
 #include "../Environment.h"
 
@@ -266,4 +249,4 @@ inline void Process::times(long& userTime, long& kernelTime)
 } // namespace pi
 
 
-#endif // Foundation_Process_INCLUDED
+#endif // PIL_Process_INCLUDED

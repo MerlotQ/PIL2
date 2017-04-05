@@ -1,20 +1,3 @@
-//
-// NamedEvent.h
-//
-// $Id: //poco/1.4/Foundation/include/Poco/NamedEvent.h#2 $
-//
-// Library: Foundation
-// Package: Processes
-// Module:  NamedEvent
-//
-// Definition of the NamedEvent class.
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
-
 
 #ifndef Foundation_NamedEvent_INCLUDED
 #define Foundation_NamedEvent_INCLUDED

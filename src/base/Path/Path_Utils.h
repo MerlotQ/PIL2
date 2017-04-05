@@ -104,6 +104,7 @@ std::string path_getAbsPath(const std::string& p);
 std::string path_getHome(void);
 std::string path_getPWD(void);
 std::string path_getTemp(void);
+std::string path_getAppSettings(void);
 
 
 char path_getSeparator(void);

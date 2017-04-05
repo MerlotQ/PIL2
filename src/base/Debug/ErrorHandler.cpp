@@ -79,6 +79,8 @@ void ErrorHandler::handle()
 
 ErrorHandler* ErrorHandler::set(ErrorHandler* pHandler)
 {
+    pi_dbg_error(pHandler);
+
     FastMutex::ScopedLock lock(_mutex);
     ErrorHandler* pOld = _pHandler;
     _pHandler = pHandler;

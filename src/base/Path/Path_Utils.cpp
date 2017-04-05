@@ -112,6 +112,17 @@ std::string path_getTemp(void)
     return Path::temp();
 }
 
+std::string path_getAppSettings(void)
+{
+#if PIL_OS_FAMILY_UNIX
+    return Path::home() + "/.config";
+#endif
+
+#if defined(PIL_OS_FAMILY_WINDOWS) || defined(PIL_MINGW)
+    return Path::home() + "\\AppData\\Local";
+#endif
+}
+
 char path_getSeparator(void)
 {
     return Path::separator();

@@ -1,17 +1,3 @@
-//
-// Process_WIN32.cpp
-//
-// $Id: //poco/1.4/Foundation/src/Process_WIN32.cpp#4 $
-//
-// Library: Foundation
-// Package: Processes
-// Module:  Process
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
 
 #ifdef PLATEFORM_INCLUDE_SOURCE
 

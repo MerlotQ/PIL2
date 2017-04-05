@@ -20,7 +20,7 @@ public:
     RSA_KeyPair(const std::string& keyN, const std::string& keyED) : N(keyN), ED(keyED) {}
 
     int isKeySet(void) {
-        return N.size() & ED.size();
+        return N.size()>0 && ED.size()>0;
     }
 
     int load(const std::string& fname);

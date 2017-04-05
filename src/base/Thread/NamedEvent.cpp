@@ -1,18 +1,3 @@
-//
-// NamedEvent.cpp
-//
-// $Id: //poco/1.4/Foundation/src/NamedEvent.cpp#2 $
-//
-// Library: Foundation
-// Package: Processes
-// Module:  NamedEvent
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
-
 
 #include "NamedEvent.h"
 

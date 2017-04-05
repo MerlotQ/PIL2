@@ -1,23 +1,6 @@
-//
-// PipeImpl_WIN32.h
-//
-// $Id: //poco/1.4/Foundation/include/Poco/PipeImpl_WIN32.h#1 $
-//
-// Library: Foundation
-// Package: Processes
-// Module:  PipeImpl
-//
-// Definition of the PipeImpl class for WIN32.
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
 
-
-#ifndef Foundation_PipeImpl_WIN32_INCLUDED
-#define Foundation_PipeImpl_WIN32_INCLUDED
+#ifndef PIL_PipeImpl_WIN32_INCLUDED
+#define PIL_PipeImpl_WIN32_INCLUDED
 
 #include "../Environment.h"
 #include "../Platform/UnWindows.h"
@@ -52,4 +35,4 @@ private:
 } // namespace pi
 
 
-#endif // Foundation_PipeImpl_WIN32_INCLUDED
+#endif // PIL_PipeImpl_WIN32_INCLUDED

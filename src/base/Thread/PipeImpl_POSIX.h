@@ -1,23 +1,5 @@
-//
-// PipeImpl_POSIX.h
-//
-// $Id: //poco/1.4/Foundation/include/Poco/PipeImpl_POSIX.h#1 $
-//
-// Library: Foundation
-// Package: Processes
-// Module:  PipeImpl
-//
-// Definition of the PipeImpl class for POSIX.
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
-
-
-#ifndef Foundation_PipeImpl_POSIX_INCLUDED
-#define Foundation_PipeImpl_POSIX_INCLUDED
+#ifndef PIL_PipeImpl_POSIX_INCLUDED
+#define PIL_PipeImpl_POSIX_INCLUDED
 
 
 #include "../Environment.h"
@@ -52,4 +34,4 @@ private:
 } // namespace pi
 
 
-#endif // Foundation_PipeImpl_POSIX_INCLUDED
+#endif // PIL_PipeImpl_POSIX_INCLUDED

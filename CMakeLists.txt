@@ -66,13 +66,13 @@ set(MODULES SYSTEM  OpenGL Qt QGLViewer)
 # Now do build things
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-rpath,.:./libs:../libs:${CMAKE_INSTALL_PREFIX}/lib")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-rpath,.:./libs:../libs:${CMAKE_INSTALL_PREFIX}/lib -fPIC")
 
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 
 # Build libs
-set(LIB_TYPE "shared")
+set(LIB_TYPE "STATIC")
 #add_subdirectory(src)
 pi_add_target(pi_base ${LIB_TYPE} src/base REQUIRED SYSTEM)
 pi_add_target(pi_hardware ${LIB_TYPE} src/hardware REQUIRED pi_base)

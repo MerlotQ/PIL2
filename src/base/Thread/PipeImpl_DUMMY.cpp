@@ -1,18 +1,3 @@
-//
-// PipeImpl_DUMMY.cpp
-//
-// $Id: //poco/1.4/Foundation/src/PipeImpl_DUMMY.cpp#1 $
-//
-// Library: Foundation
-// Package: Processes
-// Module:  PipeImpl
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
-
 #ifdef PLATEFORM_INCLUDE_SOURCE
 
 #include "PipeImpl_DUMMY.h"
@@ -68,4 +53,4 @@ void PipeImpl::closeWrite()
 } // namespace pi
 
 
-#endif // end of PLATEFORM_INCLUDE_SOURCE
+#endif // 

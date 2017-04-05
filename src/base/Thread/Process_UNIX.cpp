@@ -1,17 +1,3 @@
-//
-// Process_UNIX.cpp
-//
-// $Id: //poco/1.4/Foundation/src/Process_UNIX.cpp#3 $
-//
-// Library: Foundation
-// Package: Processes
-// Module:  Process
-//
-// Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
-// and Contributors.
-//
-// SPDX-License-Identifier:	BSL-1.0
-//
 
 #ifdef PLATEFORM_INCLUDE_SOURCE
 
@@ -287,5 +273,5 @@ void ProcessImpl::requestTerminationImpl(PIDImpl pid)
 
 } // namespace pi
 
-#endif // end of PLATEFORM_INCLUDE_SOURCE
+#endif // end of PIL_INCLUDE_SOURCE
 

@@ -1,7 +1,7 @@
-#The Pilot Intelligent Library
+# The Pilot Intelligent Library
 ------------------------------------------------------------------------------
 
-##1. Introduction
+## 1. Introduction
 ------------------------------------------------------------------------------
 The [PIL](http://zhaoyong.adv-ci.com/pil/) library includes some pretty useful tools for C++ programing espesially in the areas of moblile robotics and computer vision. 
 
@@ -40,15 +40,15 @@ The [PIL](http://zhaoyong.adv-ci.com/pil/) library includes some pretty useful t
 - scripts   --- compile scripts
 - Thirdparty--- some other librarys PIL depends on
 
-##2. Resources and Compilation on Linux
+## 2. Resources and Compilation on Linux
 ------------------------------------------------------------------------------
-###2.1. Resources
+### 2.1. Resources
   * Download the latest code with: 
     * Git: 
     
             git clone https://github.com/zdzhaoyong/PIL2
 
-###2.2. Dependency
+### 2.2. Dependency
 **OpenCV** : sudo apt-get install libopencv-dev 
 
 **Qt** : sudo apt-get install build-essential g++ libqt4-core libqt4-dev libqt4-gui qt4-doc qt4-designer 
@@ -57,7 +57,7 @@ The [PIL](http://zhaoyong.adv-ci.com/pil/) library includes some pretty useful t
 
 **Boost** : sudo apt-get install libboost1.48-all-dev
 
-###2.2. Compilation
+### 2.2. Compilation
 As we develop the whole project on Linux, only compilation *Makefile* for linux is provided. If you are using linux systems, it can be compiled with cmake:
 ```
 mkdir build
@@ -66,10 +66,10 @@ cmake ..
 make
 sudo make install
 ```
-##3. Usage and examples
+## 3. Usage and examples
 Lots of examples are provided in folder apps, cd to the app folder you wanna and input *make run* to excute the application.
 
-##4. Contact
+## 4. Contact
 ------------------------------------------------------------------------------
 If you have any problem, or you have some suggestions for this code, please contact Yong Zhao by zd5945@126.com, thank you very much!
 

@@ -26,7 +26,7 @@ int CameraPinhole::refreshParaments(){if(isValid()){fx_inv=1./fx;fy_inv=1./fy;
 
 Point2d CameraPinhole::Project(const Point3d& p3d)
 {
-#ifdef __SSE__
+#ifdef __SSE3__
     if(p3d.z==1.)
     {
         __m128d xy = _mm_setr_pd(p3d.x,p3d.y);

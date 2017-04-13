@@ -1,6 +1,39 @@
 cmake_minimum_required(VERSION 2.8.6)
 project(PIL)
 
+
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE RELEASE)
+endif()
+
+# Build libs
+if(NOT LIB_TYPE)
+  set(LIB_TYPE "SHARED")
+endif()
+
+message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
+
+if(CMAKE_BUILD_TYPE STREQUAL "RELEASE")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -O3 -mtune=generic")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -O3 -mtune=generic")
+endif()
+
+# Check C++11 or C++0x support
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+if(COMPILER_SUPPORTS_CXX11)
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+   add_definitions(-DCOMPILEDWITHC11)
+   message(STATUS "Using flag -std=c++11.")
+elseif(COMPILER_SUPPORTS_CXX0X)
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+   add_definitions(-DCOMPILEDWITHC0X)
+   message(STATUS "Using flag -std=c++0x.")
+else()
+   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
+
 macro(PIL_FIND_VERSION)
   file(READ "${PROJECT_SOURCE_DIR}/src/base/PIL_VERSION.h" _pil_version_header)
 
@@ -26,31 +59,6 @@ macro(PIL_FIND_VERSION)
   set(PROJECT_VERSION ${PIL_VERSION_MAJOR}.${PIL_VERSION_MINOR}.${PIL_VERSION_PATCH})
   set(PROJECT_SOVERSION ${PIL_VERSION_MAJOR}.${PIL_VERSION_MINOR})
 endmacro()
-
-IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE Release)#Release
-ENDIF()
-
-MESSAGE("Build type: " ${CMAKE_BUILD_TYPE})
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -O3 -march=native ")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -O3 -march=native")
-
-# Check C++11 or C++0x support
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-if(COMPILER_SUPPORTS_CXX11)
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-   add_definitions(-DCOMPILEDWITHC11)
-   message(STATUS "Using flag -std=c++11.")
-elseif(COMPILER_SUPPORTS_CXX0X)
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-   add_definitions(-DCOMPILEDWITHC0X)
-   message(STATUS "Using flag -std=c++0x.")
-else()
-   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-endif()
 #####################################################################
 PIL_FIND_VERSION()
 
@@ -67,12 +75,11 @@ set(MODULES SYSTEM  OpenGL Qt QGLViewer)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-rpath,.:./libs:../libs:${CMAKE_INSTALL_PREFIX}/lib -fPIC")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-rpath,.:./libs:../libs:${CMAKE_INSTALL_PREFIX}/lib -fPIC")
 
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 
-# Build libs
-set(LIB_TYPE "STATIC")
 #add_subdirectory(src)
 pi_add_target(pi_base ${LIB_TYPE} src/base REQUIRED SYSTEM)
 pi_add_target(pi_hardware ${LIB_TYPE} src/hardware REQUIRED pi_base)
